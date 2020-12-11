@@ -11,8 +11,10 @@ import (
 //region Server Properties
 
 const port string = "52515"
+const totalPlayerLimit int = 16
 
 var serverIsActive bool
+var idToPlayer map[int]*player
 
 //ServerIsActive returns true if and only if the server is currently active and listening.
 func ServerIsActive() bool {
@@ -25,17 +27,29 @@ func ServerIsActive() bool {
 
 type client struct {
 	conn *net.Conn
-	id   int
 }
 
 type player struct {
 	clientInstance *client
 	username       string
+	id             int
 }
 
 //endregion
 
+//region Server Initialization and Listening
+
+func initializeServerParams() {
+	idToPlayer = make(map[int]*player)
+	for i := 0; i < totalPlayerLimit; i++ {
+		idToPlayer[i] = nil
+	}
+}
+
 func main() {
+
+	initializeServerParams()
+
 	listener, err := net.Listen("tcp", port)
 
 	if err != nil {
@@ -62,8 +76,12 @@ func main() {
 	}
 }
 
+//endregion
+
+//region Connection and Client/Player Construction
+
 func handleConnection(conn *net.Conn) {
-	scanner := bufio.NewScanner(*conn)
+	scanner := bufio.NewScanner(*conn) //we use scanner instead of regular reader with '\n' token
 	c := constructClient(conn, scanner)
 	if c == nil {
 		fmt.Println(time.Now().Format("2006-01-02 15:04:05") + ": " + "INVALID CONNECTION FROM: " + (*conn).RemoteAddr().String())
@@ -76,7 +94,13 @@ func constructClient(conn *net.Conn, scanner *bufio.Scanner) *client {
 	if !(*scanner).Scan() {
 		return nil
 	}
+	var newClient = client{
+		conn: conn,
+	}
+	return &newClient
 }
+
+//endregion
 
 //region Delegate Channels and Server Control
 
