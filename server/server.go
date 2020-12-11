@@ -9,11 +9,13 @@ import (
 
 //region Server Properties
 
-const port string = "52515"
-const totalPlayerLimit int = 16
+const (
+	port             string = "52515"
+	totalPlayerLimit int    = 16
+	dataBufferSize   int    = 4096
+)
 
 var serverIsActive bool
-var idToPlayer map[int]*player
 
 //ServerIsActive returns true if and only if the server is currently active and listening.
 func ServerIsActive() bool {
@@ -22,27 +24,10 @@ func ServerIsActive() bool {
 
 //endregion
 
-//region Type Declarations
-
-type client struct {
-	conn *net.Conn
-}
-
-type player struct {
-	clientInstance *client
-	username       string
-	id             int
-}
-
-//endregion
-
 //region Server Initialization and Listening
 
 func initializeServerParams() {
-	idToPlayer = make(map[int]*player)
-	for i := 0; i < totalPlayerLimit; i++ {
-		idToPlayer[i] = nil
-	}
+	initializeClientManagementParams()
 }
 
 func main() {
@@ -104,21 +89,18 @@ func constructBasePlayer(conn *net.Conn) *player {
 		return nil
 	}
 
-	var newClient = client{
-		conn: conn,
-	}
-	var newPlayer = player{
-		clientInstance: &newClient,
-		id:             id,
-		username:       "",
-	}
-
-	return &newPlayer
+	return newPlayer(id, conn)
 }
 
 //endregion
 
+//region Client Processing
 
+func tendToClientRead(p *player) {
+
+}
+
+//endregion
 
 //region Delegate Channels and Server Control
 
