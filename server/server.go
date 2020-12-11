@@ -65,7 +65,7 @@ func main() {
 //region Connection and Client/Player Construction
 
 func processInitialConnection(conn *net.Conn) {
-	p := constructBasePlayer(conn)
+	p := constructBasePlayerIfValid(conn)
 	if p == nil {
 		fmt.Println(time.Now().Format("2006-01-02 15:04:05") + ": " + "INVALID CONNECTION FROM: " + (*conn).RemoteAddr().String())
 		(*conn).Close()
@@ -74,7 +74,7 @@ func processInitialConnection(conn *net.Conn) {
 
 }
 
-func constructBasePlayer(conn *net.Conn) *player {
+func constructBasePlayerIfValid(conn *net.Conn) *player {
 	id := -1
 
 	//try to find valid id TODO: Optimize
