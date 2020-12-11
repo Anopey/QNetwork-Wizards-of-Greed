@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"net"
+	"time"
 )
 
 //region Server Properties
@@ -15,6 +17,20 @@ var serverIsActive bool
 //ServerIsActive returns true if and only if the server is currently active and listening.
 func ServerIsActive() bool {
 	return serverIsActive
+}
+
+//endregion
+
+//region Type Declarations
+
+type client struct {
+	conn *net.Conn
+	id   int
+}
+
+type player struct {
+	clientInstance *client
+	username       string
 }
 
 //endregion
@@ -47,7 +63,19 @@ func main() {
 }
 
 func handleConnection(conn *net.Conn) {
+	scanner := bufio.NewScanner(*conn)
+	c := constructClient(conn, scanner)
+	if c == nil {
+		fmt.Println(time.Now().Format("2006-01-02 15:04:05") + ": " + "INVALID CONNECTION FROM: " + (*conn).RemoteAddr().String())
+		(*conn).Close()
+		return
+	}
+}
 
+func constructClient(conn *net.Conn, scanner *bufio.Scanner) *client {
+	if !(*scanner).Scan() {
+		return nil
+	}
 }
 
 //region Delegate Channels and Server Control
