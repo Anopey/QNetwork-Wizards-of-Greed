@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"net"
@@ -81,23 +80,40 @@ func main() {
 //region Connection and Client/Player Construction
 
 func handleConnection(conn *net.Conn) {
-	scanner := bufio.NewScanner(*conn) //we use scanner instead of regular reader with '\n' token
-	c := constructClient(conn, scanner)
-	if c == nil {
+	p := constructBasePlayer(conn)
+	if p == nil {
 		fmt.Println(time.Now().Format("2006-01-02 15:04:05") + ": " + "INVALID CONNECTION FROM: " + (*conn).RemoteAddr().String())
 		(*conn).Close()
 		return
 	}
+
 }
 
-func constructClient(conn *net.Conn, scanner *bufio.Scanner) *client {
-	if !(*scanner).Scan() {
+func constructBasePlayer(conn *net.Conn) *player {
+	id := -1
+
+	//try to find valid id TODO: Optimize
+	for i := 0; i < totalPlayerLimit; i++ {
+		if idToPlayer[i] != nil {
+			id = i
+		}
+	}
+
+	if id == -1 {
+		//no valid id could be found! Server is over limit.
 		return nil
 	}
+
 	var newClient = client{
 		conn: conn,
 	}
-	return &newClient
+	var newPlayer = player{
+		clientInstance: &newClient,
+		id:             id,
+		username:       "",
+	}
+
+	return &newPlayer
 }
 
 //endregion
