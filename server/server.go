@@ -71,7 +71,7 @@ func main() {
 		}
 
 		fmt.Println("New connection from " + conn.RemoteAddr().String())
-		go handleConnection(&conn)
+		go processInitialConnection(&conn)
 	}
 }
 
@@ -79,7 +79,7 @@ func main() {
 
 //region Connection and Client/Player Construction
 
-func handleConnection(conn *net.Conn) {
+func processInitialConnection(conn *net.Conn) {
 	p := constructBasePlayer(conn)
 	if p == nil {
 		fmt.Println(time.Now().Format("2006-01-02 15:04:05") + ": " + "INVALID CONNECTION FROM: " + (*conn).RemoteAddr().String())
@@ -117,6 +117,8 @@ func constructBasePlayer(conn *net.Conn) *player {
 }
 
 //endregion
+
+
 
 //region Delegate Channels and Server Control
 
