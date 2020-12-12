@@ -10,7 +10,7 @@ import (
 //region Server Properties
 
 const (
-	port             string = "52515"
+	port             string = ":52515"
 	totalPlayerLimit int    = 16
 	dataBufferSize   int    = 4096
 )
@@ -112,8 +112,8 @@ func tendToClientRead(p *player) {
 		}
 
 		//for now print as string.
-		
-		s:=string(buf[:len])
+
+		s := string(buf[:len])
 
 		fmt.Println("Message", s)
 		fmt.Println("Length", len)
