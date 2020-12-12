@@ -72,6 +72,7 @@ func processInitialConnection(conn *net.Conn) {
 		return
 	}
 
+	startClientProcesses(p)
 }
 
 func constructBasePlayerIfValid(conn *net.Conn) *player {
@@ -90,6 +91,10 @@ func constructBasePlayerIfValid(conn *net.Conn) *player {
 	}
 
 	return newPlayer(id, conn)
+}
+
+func startClientProcesses(p *player) {
+	tendToClientRead(p)
 }
 
 //endregion
