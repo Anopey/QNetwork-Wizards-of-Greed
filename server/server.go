@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"time"
+	"strconv"
 )
 
 //region Server Properties
@@ -67,7 +67,7 @@ func main() {
 func processInitialConnection(conn *net.Conn) {
 	p := constructBasePlayerIfValid(conn)
 	if p == nil {
-		fmt.Println(time.Now().Format("2006-01-02 15:04:05") + ": " + "INVALID CONNECTION FROM: " + (*conn).RemoteAddr().String())
+		fmt.Println(getCurrentServerTime() + ": " + "INVALID CONNECTION FROM: " + (*conn).RemoteAddr().String())
 		(*conn).Close()
 		return
 	}
@@ -97,7 +97,27 @@ func constructBasePlayerIfValid(conn *net.Conn) *player {
 //region Client Processing
 
 func tendToClientRead(p *player) {
+	buf := make([]byte, dataBufferSize)
 
+	conn := p.clientInstance.conn
+
+	for {
+		len, err := (*conn).Read(buf)
+
+		if err != nil {
+			fmt.Printf("***\nError reading data from player" + "\n Server Time:" + getCurrentServerTime() + "\n ID:" + strconv.Itoa(p.id) + "\nUsername: " + p.username +
+				"\n IP:" + (*p.clientInstance.conn).RemoteAddr().String() + "\nError:" + err.Error() + "\n***\n")
+			//TODO disconnect client etc.
+			break
+		}
+
+		//for now print as string.
+		
+		s:=string(buf[:len])
+
+		fmt.Println("Message", s)
+		fmt.Println("Length", len)
+	}
 }
 
 //endregion
