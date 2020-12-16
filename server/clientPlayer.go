@@ -37,3 +37,21 @@ func newPlayer(id int, conn *net.Conn) *player {
 	players = append(players, &newPlayer)
 	return &newPlayer
 }
+
+func constructBasePlayerIfValid(conn *net.Conn) *player {
+	id := -1
+
+	//try to find valid id TODO: Optimize
+	for i := 0; i < totalPlayerLimit; i++ {
+		if idToPlayer[i] == nil {
+			id = i
+		}
+	}
+
+	if id == -1 {
+		//no valid id could be found! Server is over limit.
+		return nil
+	}
+
+	return newPlayer(id, conn)
+}
