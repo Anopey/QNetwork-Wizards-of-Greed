@@ -42,6 +42,11 @@ public class Client : MonoBehaviour
             Singleton = null;
     }
 
+    public void ConnectToServer()
+    {
+        TCPInstance.Connect();
+    }
+
     #endregion
     
     private void Start()
