@@ -45,16 +45,23 @@ namespace Game.Networking
                 Singleton = null;
         }
 
-        public void ConnectToServer()
-        {
-            TCPInstance.Connect();
-        }
 
         #endregion
 
         private void Start()
         {
             _tcp = new TCP();
+        }
+
+
+        public void ConnectToServer()
+        {
+            TCPInstance.Connect();
+        }
+
+        public void WriteToServer(Packet packet)
+        {
+            TCPInstance.SendPacket(packet);
         }
 
         public class TCP
@@ -74,6 +81,18 @@ namespace Game.Networking
 
                 receiveBuffer = new byte[dataBufferSize];
                 socket.BeginConnect(Singleton._ip, Singleton.Port, ConnectCallback, socket);
+            }
+
+            public void SendPacket(Packet packet)
+            {
+                try
+                {
+                    stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+                }
+                catch(Exception e)
+                {
+                    Debug.LogError("Error during writing to server: \n" + e.Message);
+                }
             }
 
             private void ConnectCallback(IAsyncResult result)

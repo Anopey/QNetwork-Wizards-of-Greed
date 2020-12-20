@@ -15,12 +15,7 @@ namespace Game.Networking
         private byte[] bufferArray;
         private int readPos;
 
-        /// <summary>Creates a new empty packet (without an ID).</summary>
-        public Packet()
-        {
-            bufferList = new List<byte>(); // Intitialize buffer
-            readPos = 0; // Set readPos to 0
-        }
+        public int ID { get; private set; }
 
         /// <summary>Creates a new packet with a given ID. Used for sending.</summary>
         /// <param name="_id">The packet ID.</param>
@@ -30,14 +25,17 @@ namespace Game.Networking
             readPos = 0; // Set readPos to 0
 
             Write(_id); // Write packet id to the buffer
+            ID = _id;
         }
 
-        /// <summary>Creates a packet from which data can be read. Used for receiving.</summary>
+        /// <summary>Creates a packet from which data can be read. Used for receiving. Also automatically sets the ID of the packet. </summary>
         /// <param name="_data">The bytes to add to the packet.</param>
         public Packet(byte[] _data)
         {
             bufferList = new List<byte>(); // Intitialize buffer
             readPos = 0; // Set readPos to 0
+
+            ID = ReadInt(true);
 
             SetBytes(_data);
         }
@@ -84,20 +82,14 @@ namespace Game.Networking
             return Length() - readPos; // Return the remaining length (unread)
         }
 
-        /// <summary>Resets the packet instance to allow it to be reused.</summary>
-        /// <param name="_shouldReset">Whether or not to reset the packet.</param>
-        public void Reset(bool _shouldReset = true)
+        /// <summary>Resets the packet instance to allow it to be reused. An ID is always mandatory for a packet. </summary>
+        public void Reset(int newID)
         {
-            if (_shouldReset)
-            {
-                bufferList.Clear(); // Clear buffer
-                bufferArray = null;
-                readPos = 0; // Reset readPos
-            }
-            else
-            {
-                readPos -= 4; // "Unread" the last read int
-            }
+            bufferList.Clear(); // Clear buffer
+            bufferArray = null;
+            readPos = 0; // Reset readPos
+
+            Write(newID);
         }
         #endregion
 
@@ -163,9 +155,9 @@ namespace Game.Networking
                 byte _value = bufferArray[readPos];
                 if (_moveReadPos)
                 {
-                    readPos += sizeof(byte); 
+                    readPos += sizeof(byte);
                 }
-                return _value; 
+                return _value;
             }
             else
             {
@@ -185,7 +177,7 @@ namespace Game.Networking
                 {
                     readPos += _length;
                 }
-                return _value; 
+                return _value;
             }
             else
             {
@@ -237,10 +229,10 @@ namespace Game.Networking
         {
             if (bufferList.Count > readPos)
             {
-                long _value = BitConverter.ToInt64(bufferArray, readPos); 
+                long _value = BitConverter.ToInt64(bufferArray, readPos);
                 if (_moveReadPos)
                 {
-                    readPos += sizeof(long); 
+                    readPos += sizeof(long);
                 }
                 return _value;
             }
@@ -261,7 +253,7 @@ namespace Game.Networking
                 {
                     readPos += sizeof(float);
                 }
-                return _value; 
+                return _value;
             }
             else
             {
@@ -280,7 +272,7 @@ namespace Game.Networking
                 {
                     readPos += sizeof(bool);
                 }
-                return _value; 
+                return _value;
             }
             else
             {
