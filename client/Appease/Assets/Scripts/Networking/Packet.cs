@@ -50,13 +50,6 @@ namespace Game.Networking
             bufferArray = bufferList.ToArray();
         }
 
-        /// <summary>Inserts the given int at the start of the buffer.</summary>
-        /// <param name="_value">The int to insert.</param>
-        public void InsertInt(int _value)
-        {
-            bufferList.InsertRange(0, BitConverter.GetBytes(_value)); // Insert the int at the start of the buffer
-        }
-
         /// <summary>Gets the packet's content in array form.</summary>
         public byte[] ToArray()
         {
@@ -121,6 +114,12 @@ namespace Game.Networking
         /// <summary>Adds a float to the packet.</summary>
         /// <param name="_value">The float to add.</param>
         public void Write(float _value)
+        {
+            bufferList.AddRange(BitConverter.GetBytes(_value));
+        }
+        /// <summary>Adds a double to the packet.</summary>
+        /// <param name="_value">The float to add.</param>
+        public void Write(double _value)
         {
             bufferList.AddRange(BitConverter.GetBytes(_value));
         }
@@ -243,6 +242,25 @@ namespace Game.Networking
             if (bufferList.Count > readPos)
             {
                 float _value = BitConverter.ToSingle(bufferArray, readPos); // Convert the bytes to a float
+                if (_moveReadPos)
+                {
+                    readPos += sizeof(float);
+                }
+                return _value;
+            }
+            else
+            {
+                throw new Exception("Could not read value of type 'float'!");
+            }
+        }
+
+        /// <summary>Reads a double from the packet.</summary>
+        /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
+        public double ReadDouble(bool _moveReadPos = true)
+        {
+            if (bufferList.Count > readPos)
+            {
+                double _value = BitConverter.ToDouble(bufferArray, readPos); // Convert the bytes to a float
                 if (_moveReadPos)
                 {
                     readPos += sizeof(float);
