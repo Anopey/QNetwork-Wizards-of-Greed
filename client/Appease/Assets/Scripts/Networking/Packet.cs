@@ -50,12 +50,6 @@ namespace Game.Networking
             bufferArray = bufferList.ToArray();
         }
 
-        /// <summary>Inserts the length of the packet's content at the start of the buffer.</summary>
-        public void WriteLength()
-        {
-            bufferList.InsertRange(0, BitConverter.GetBytes(bufferList.Count)); // Insert the byte length of the packet at the very beginning
-        }
-
         /// <summary>Inserts the given int at the start of the buffer.</summary>
         /// <param name="_value">The int to insert.</param>
         public void InsertInt(int _value)
