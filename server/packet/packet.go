@@ -6,11 +6,11 @@ import (
 
 type Packet struct {
 	buf     []byte
-	ID      int32
+	ID      uint16
 	readPos uint16
 }
 
-func NewPacket(ID int32) *Packet {
+func NewPacket(ID uint16) *Packet {
 	p := Packet{
 		buf: make([]byte, 0),
 		ID:  ID,
@@ -24,7 +24,7 @@ func NewPacketByCopy(buf []byte) *Packet {
 		buf: make([]byte, len(buf)),
 	}
 	copy(p.buf, buf)
-	p.ID = p.ReadInt32()
+	p.ID = p.ReadUInt16()
 	return &p
 }
 
@@ -32,7 +32,7 @@ func NewPacketBySameReference(buf []byte) *Packet {
 	p := Packet{
 		buf: buf,
 	}
-	p.ID = p.ReadInt32()
+	p.ID = p.ReadUInt16()
 	return &p
 }
 
@@ -111,6 +111,10 @@ func (p *Packet) ReadByte() byte {
 func (p *Packet) ReadBytes(len uint16) []byte {
 	p.readPos += len
 	return p.buf[p.readPos-len : p.readPos]
+}
+
+func (p *Packet) ReadUInt16() uint16 {
+	return uint16(p.ReadByte()) | uint16(p.ReadByte())<<8
 }
 
 func (p *Packet) ReadInt16() int16 {

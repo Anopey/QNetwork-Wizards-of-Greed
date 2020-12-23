@@ -9,6 +9,7 @@ namespace Game.Networking
 
     //This class was initially imported from Tom Weiland's C# Networking Series. You may find them at https://www.youtube.com/watch?v=4uHTSknGJaY&list=PLXkn83W0QkfnqsK8I0RAz5AbUxfg3bOQ5&index=2
 
+    //TODO consider getting rid of movereadpos optional bool
     public class Packet : IDisposable
     {
         private List<byte> bufferList;
@@ -188,6 +189,25 @@ namespace Game.Networking
                 if (_moveReadPos)
                 {
                     readPos += sizeof(short);
+                }
+                return _value;
+            }
+            else
+            {
+                throw new Exception("Could not read value of type 'short'!");
+            }
+        }
+
+        /// <summary>Reads a short from the packet.</summary>
+        /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
+        public ushort ReadUShort(bool _moveReadPos = true)
+        {
+            if (bufferList.Count > readPos)
+            {
+                ushort _value = BitConverter.ToUInt16(bufferArray, readPos);
+                if (_moveReadPos)
+                {
+                    readPos += sizeof(ushort);
                 }
                 return _value;
             }
