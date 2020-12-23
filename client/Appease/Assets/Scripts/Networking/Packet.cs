@@ -16,11 +16,11 @@ namespace Game.Networking
         private byte[] bufferArray;
         private int readPos;
 
-        public int ID { get; private set; }
+        public ushort ID { get; private set; }
 
         /// <summary>Creates a new packet with a given ID. Used for sending.</summary>
         /// <param name="_id">The packet ID.</param>
-        public Packet(int _id)
+        public Packet(ushort _id)
         {
             bufferList = new List<byte>(); // Intitialize buffer
             readPos = 0; // Set readPos to 0
@@ -36,7 +36,7 @@ namespace Game.Networking
             bufferList = new List<byte>(); // Intitialize buffer
             readPos = 0; // Set readPos to 0
 
-            ID = ReadInt(true);
+            ID = ReadUShort(true);
 
             SetBytes(_data);
         }
@@ -100,6 +100,11 @@ namespace Game.Networking
         {
             bufferList.AddRange(BitConverter.GetBytes(_value));
         }
+        public void Write(ushort _value)
+        {
+            bufferList.AddRange(BitConverter.GetBytes(_value));
+        }
+
         /// <summary>Adds an int to the packet.</summary>
         /// <param name="_value">The int to add.</param>
         public void Write(int _value)
@@ -137,6 +142,7 @@ namespace Game.Networking
             Write(_value.Length); // Add the length of the string to the packet
             bufferList.AddRange(Encoding.ASCII.GetBytes(_value)); // Add the string itself
         }
+
         #endregion
 
         #region Read Data

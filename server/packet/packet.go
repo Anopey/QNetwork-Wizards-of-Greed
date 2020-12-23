@@ -15,7 +15,7 @@ func NewPacket(ID uint16) *Packet {
 		buf: make([]byte, 0),
 		ID:  ID,
 	}
-	p.WriteInt32(ID)
+	p.WriteUInt16(ID)
 	return &p
 }
 
@@ -48,6 +48,11 @@ func (p *Packet) WriteBytes(vals []byte) {
 	for _, i := range vals {
 		p.buf = append(p.buf, i)
 	}
+}
+
+func (p *Packet) WriteUInt16(val uint16) {
+	p.buf = append(p.buf, byte(val))
+	p.buf = append(p.buf, byte(val>>8))
 }
 
 func (p *Packet) WriteInt16(val int16) {
