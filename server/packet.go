@@ -144,6 +144,7 @@ func (p *packet) readBool() bool {
 }
 
 func (p *packet) readString(len uint16) string {
+	p.readPos += len
 	return string(p.readBytes(len))
 }
 
