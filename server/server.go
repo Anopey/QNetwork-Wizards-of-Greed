@@ -11,8 +11,8 @@ import (
 
 const (
 	port             string = ":52515"
-	totalPlayerLimit int    = 16
-	dataBufferSize   int    = 4096
+	totalPlayerLimit uint32 = 16
+	dataBufferSize   uint16 = 4096
 )
 
 var serverIsActive bool
@@ -92,7 +92,7 @@ func tendToClientRead(p *player) {
 		len, err := (*conn).Read(buf)
 
 		if err != nil {
-			fmt.Printf("***\nError reading data from player" + "\n Server Time:" + getCurrentServerTime() + "\n ID:" + strconv.Itoa(p.id) + "\nUsername: " + p.username +
+			fmt.Printf("***\nError reading data from player" + "\n Server Time:" + getCurrentServerTime() + "\n ID:" + strconv.Itoa(int(p.id)) + "\nUsername: " + p.username +
 				"\n IP:" + (*p.clientInstance.conn).RemoteAddr().String() + "\nError:" + err.Error() + "\n***\n")
 			//TODO disconnect client etc.
 			break
