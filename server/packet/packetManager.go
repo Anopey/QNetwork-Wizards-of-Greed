@@ -8,9 +8,10 @@ import (
 type PacketHandler func(pd *PacketDataType, p *Packet)
 
 type PacketDataType struct {
-	id         uint16
-	primitives []reflect.Type
-	handler    *PacketHandler
+	description string
+	id          uint16
+	primitives  []reflect.Type
+	handler     *PacketHandler
 }
 
 type PacketManager struct {
@@ -31,4 +32,3 @@ func (pm *PacketManager) RegisterPacketDataType(p PacketDataType) {
 	}
 	pm.packets[p.id] = &p
 }
-
