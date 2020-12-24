@@ -21,4 +21,11 @@ func initializePackets() *packet.PacketManager {
 	return pm
 }
 
+//region Writing Utils
+func (p *player) WriteMessage(message string) {
+	pac := packet.NewPacket(16)
+	pac.WriteString(message)
+	p.clientInstance.writeChannel <- pac
+}
 
+//endregion

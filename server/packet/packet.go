@@ -36,6 +36,18 @@ func NewPacketBySameReference(buf []byte) *Packet {
 	return &p
 }
 
+//region Utils
+
+func (p *Packet) Length() uint16 {
+	return uint16(len(p.buf))
+}
+
+func (p *Packet) GetAllBytes() []byte {
+	return p.buf
+}
+
+//endregion
+
 //region Write Data
 
 //assumes Little Endian!
@@ -97,6 +109,7 @@ func (p *Packet) WriteBool(val bool) {
 }
 
 func (p *Packet) WriteString(val string) {
+	p.WriteUInt16(uint16(len(val)))
 	for _, i := range []byte(val) {
 		p.buf = append(p.buf, i)
 	}
@@ -152,7 +165,8 @@ func (p *Packet) ReadBool() bool {
 	return true
 }
 
-func (p *Packet) ReadString(len uint16) string {
+func (p *Packet) ReadString() string {
+	len := p.ReadUInt16()
 	p.readPos += len
 	return string(p.ReadBytes(len))
 }

@@ -76,11 +76,12 @@ func processInitialConnection(conn *net.Conn) {
 		(*conn).Close()
 		return
 	}
-
 	startClientProcesses(p)
+	p.WriteMessage("Welcome!")
 }
 
 func startClientProcesses(p *player) {
+	go tendToClientChannels(p)
 	tendToClientRead(p)
 }
 
@@ -109,6 +110,20 @@ func tendToClientRead(p *player) {
 
 		fmt.Println("Message", s)
 		fmt.Println("Length", len)
+	}
+}
+
+func tendToClientChannels(p *player) {
+	conn := p.clientInstance.conn
+	for {
+		select {
+		case pac := <-p.clientInstance.writeChannel:
+			(*conn).Write(pac.GetAllBytes())
+			break
+		case <-p.clientInstance.clientTerminate:
+			//client disconnect logic
+			return
+		}
 	}
 }
 

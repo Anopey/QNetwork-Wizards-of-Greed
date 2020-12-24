@@ -1,18 +1,25 @@
 package main
 
-import "net"
+import (
+	"net"
+
+	"github.com/Anopey/Appease/server/packet"
+)
 
 var idToPlayer map[uint32]*player
 var players []*player
 
 type client struct {
-	conn *net.Conn
+	conn            *net.Conn
+	writeChannel    chan *packet.Packet
+	clientTerminate chan interface{}
 }
 
 type player struct {
 	clientInstance *client
 	username       string
 	id             uint32
+	active         bool
 }
 
 func initializeClientManagementParams() {
@@ -25,12 +32,15 @@ func initializeClientManagementParams() {
 
 func newPlayer(id uint32, conn *net.Conn) *player {
 	var newClient = client{
-		conn: conn,
+		conn:            conn,
+		writeChannel:    make(chan *packet.Packet, 5),
+		clientTerminate: make(chan interface{}),
 	}
 	var newPlayer = player{
 		clientInstance: &newClient,
 		id:             id,
 		username:       "",
+		active:         true,
 	}
 
 	idToPlayer[id] = &newPlayer
