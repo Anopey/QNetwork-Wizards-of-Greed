@@ -5,6 +5,8 @@ import (
 	"log"
 	"net"
 	"strconv"
+
+	"github.com/Anopey/Appease/server/packet"
 )
 
 //region Server Properties
@@ -26,8 +28,11 @@ func ServerIsActive() bool {
 
 //region Server Initialization and Listening
 
+var packetManager *packet.PacketManager
+
 func initializeServerParams() {
 	initializeClientManagementParams()
+	packetManager = initializePackets()
 }
 
 func main() {

@@ -8,10 +8,10 @@ import (
 type PacketHandler func(pd *PacketDataType, p *Packet)
 
 type PacketDataType struct {
-	description string
-	id          uint16
-	primitives  []reflect.Type
-	handler     *PacketHandler
+	Description string
+	ID          uint16
+	Primitives  []reflect.Kind
+	Handler     *PacketHandler
 }
 
 type PacketManager struct {
@@ -25,10 +25,10 @@ func NewPacketManager() *PacketManager {
 	return &pm
 }
 
-func (pm *PacketManager) RegisterPacketDataType(p PacketDataType) {
-	_, exists := pm.packets[p.id]
+func (pm *PacketManager) RegisterPacketDataType(p *PacketDataType) {
+	_, exists := pm.packets[p.ID]
 	if exists {
-		panic("packet type of id " + strconv.Itoa(int(p.id)) + " already exists!")
+		panic("packet type of id " + strconv.Itoa(int(p.ID)) + " already exists!")
 	}
-	pm.packets[p.id] = &p
+	pm.packets[p.ID] = p
 }
