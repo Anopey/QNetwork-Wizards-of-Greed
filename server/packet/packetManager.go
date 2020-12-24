@@ -1,22 +1,34 @@
 package packet
 
-import "reflect"
+import (
+	"reflect"
+	"strconv"
+)
 
-type PacketHandler func(pd *PacketData, p *Packet)
+type PacketHandler func(pd *PacketDataType, p *Packet)
 
-type PacketData struct {
-	id         int
+type PacketDataType struct {
+	id         uint16
 	primitives []reflect.Type
 	handler    *PacketHandler
 }
 
 type PacketManager struct {
-	packets map[uint16]*PacketData
+	packets map[uint16]*PacketDataType
 }
 
 func NewPacketManager() *PacketManager {
 	pm := PacketManager{
-		packets: make(map[uint16]*PacketData),
+		packets: make(map[uint16]*PacketDataType),
 	}
 	return &pm
 }
+
+func (pm *PacketManager) RegisterPacketDataType(p PacketDataType) {
+	_, exists := pm.packets[p.id]
+	if exists {
+		panic("packet type of id " + strconv.Itoa(int(p.id)) + " already exists!")
+	}
+	pm.packets[p.id] = &p
+}
+
