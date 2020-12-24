@@ -71,6 +71,8 @@ namespace Game.Networking
             private NetworkStream stream;
             private byte[] receiveBuffer;
 
+            private Packet recievedData;
+
             public void Connect()
             {
                 socket = new TcpClient

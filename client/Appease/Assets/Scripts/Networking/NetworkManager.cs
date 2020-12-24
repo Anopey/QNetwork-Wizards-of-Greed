@@ -2,11 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
 namespace Game.Networking
 {
 
     public class NetworkManager : MonoBehaviour
     {
+
+        public static NetworkManager Singleton { get; private set; }
+
+        [SerializeField]
+        private PacketManagerArgs packetManagerArgs;
+
+        public PacketManager PacketManager { get; private set; }
+
+        #region Singleton Architecture
+
+        private void Awake()
+        {
+            if(Singleton != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Singleton = this;
+            Initialize();
+        }
+
+        private void OnDestroy()
+        {
+            if (Singleton == this)
+                Singleton = null;
+        }
+
+        #endregion
+
+        private void Initialize()
+        {
+            PacketManager = new PacketManager(packetManagerArgs);
+        }
+
+        #region Thread Management
+
         private static readonly List<Action> executeOnMainThread = new List<Action>();
         private static readonly List<Action> executeCopiedOnMainThread = new List<Action>();
         private static bool actionToExecuteOnMainThread = false;
@@ -52,6 +89,9 @@ namespace Game.Networking
                 }
             }
         }
+
+        #endregion
+
     }
 
 }

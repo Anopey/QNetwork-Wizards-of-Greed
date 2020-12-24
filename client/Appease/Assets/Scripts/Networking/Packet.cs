@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Game.Networking
 {
 
-    //This class was initially imported from Tom Weiland's C# Networking Series. You may find them at https://www.youtube.com/watch?v=4uHTSknGJaY&list=PLXkn83W0QkfnqsK8I0RAz5AbUxfg3bOQ5&index=2
+    //This class was initially imported from Tom Weiland's C# Networking Series. Though it has been somewhat heavily modified since then, the basis of the packet implementation was initially found in his tutorials. You may find them at https://www.youtube.com/watch?v=4uHTSknGJaY&list=PLXkn83W0QkfnqsK8I0RAz5AbUxfg3bOQ5&index=2
 
     //TODO consider getting rid of movereadpos optional bool
     public class Packet : IDisposable
