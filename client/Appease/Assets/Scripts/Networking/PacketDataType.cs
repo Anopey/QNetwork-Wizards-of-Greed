@@ -22,6 +22,8 @@ namespace Game.Networking
 
         private ushort stringPrimitiveCount;
 
+        private ushort lengthToTellRealLength;
+
         private void Awake()
         {
             CalculateMinimumByteLength();
@@ -30,7 +32,7 @@ namespace Game.Networking
 
         private void CalculateMinimumByteLength()
         {
-            calculatedMinimumTotalByteLength = 2; //since we start with ID.
+            calculatedMinimumTotalByteLength = 4; //since we start with ID and length.
             foreach (TypeCode t in Primitives)
             {
                 switch (t)
@@ -84,7 +86,7 @@ namespace Game.Networking
                         calculatedMinimumTotalByteLength += 8;
                         break;
                     case TypeCode.String:
-                        calculatedMinimumTotalByteLength += 4;
+                        calculatedMinimumTotalByteLength += 2;
                         break;
                     default:
                         Debug.LogError("Unexpected type code during packet data type length calculation");

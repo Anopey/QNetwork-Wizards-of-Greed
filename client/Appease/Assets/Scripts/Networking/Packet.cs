@@ -7,57 +7,78 @@ using System.Threading.Tasks;
 namespace Game.Networking
 {
 
-    //This class was initially imported from Tom Weiland's C# Networking Series. Though it has been somewhat heavily modified since then, the basis of the packet implementation was initially found in his tutorials. You may find them at https://www.youtube.com/watch?v=4uHTSknGJaY&list=PLXkn83W0QkfnqsK8I0RAz5AbUxfg3bOQ5&index=2
-
     //TODO consider getting rid of movereadpos optional bool
     public class Packet : IDisposable
     {
-        private List<byte> bufferList;
-        private byte[] bufferArray;
-        private int readPos;
+        public byte[] PacketBuffer { get; private set; }
+        private int readWritePos;
 
         public ushort ID { get; private set; }
 
-        /// <summary>Creates a new packet with a given ID. Used for sending.</summary>
-        /// <param name="_id">The packet ID.</param>
-        public Packet(ushort _id)
-        {
-            bufferList = new List<byte>(); // Intitialize buffer
-            readPos = 0; // Set readPos to 0
+        private PacketDataType packetDataType;
 
+        private void InitializePacketWithID(ushort _id)
+        {
+            packetDataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(_id);
+            readWritePos = 4; 
+            PacketBuffer = new byte[packetDataType.MinimumByteLength];
             Write(_id); // Write packet id to the buffer
+            Write(packetDataType.MinimumByteLength);
             ID = _id;
         }
 
-        /// <summary>Creates a packet from which data can be read. Used for receiving. Also automatically sets the ID of the packet. As such, the given data must at
-        /// least have a ushort header. </summary>
-        /// <param name="_data">The bytes to add to the packet.</param>
+        private void InitializePacketWithIDAndStrings(ushort _id, string[] strings)
+        {
+            packetDataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(_id);
+            readWritePos = 4;
+
+            ushort strlen = 0;
+
+            for (int i = 0; i < strings.Length; i++)
+            {
+                strlen += (ushort)strings[i].Length;
+            }
+
+            PacketBuffer = new byte[packetDataType.MinimumByteLength + strlen];
+            Write(_id); // Write packet id to the buffer
+            Write((ushort)(packetDataType.MinimumByteLength + strlen));
+            ID = _id;
+
+            Write(strings);
+        }
+
+        /// <summary>NEED TO USE OTHER CONSTRUCTOR TO CREATE PACKETS THAT CAN SEND STRINGS!! Creates a new packet with a given ID. Used for sending.</summary>
+        /// <param name="_id">The packet ID.</param>
+        public Packet(ushort _id)
+        {
+            InitializePacketWithID(_id);
+        }
+
+        /// <summary>Creates a new packet with a given ID and required strings. Used for sending.</summary>
+        /// <param name="_id">The packet ID.</param>
+        public Packet(ushort _id, string[] strings)
+        {
+            InitializePacketWithIDAndStrings(_id, strings);
+        }
+
+        public struct PacketReadArgs
+        {
+            public byte[] _data;
+            public ushort _id;
+            public ushort bufferLen;
+        }
+
+        /// <summary>Creates a packet from which data can be read. Used for receiving. The passed byte array must at least contain the initial ID and length ushorts </summary>
         public Packet(byte[] _data)
         {
-            bufferList = new List<byte>(); // Intitialize buffer
-            readPos = 0; // Set readPos to 0
-
-            SetBytes(_data);
-            ID = ReadUShort(true);
-
+            readWritePos = 4; 
+            PacketBuffer = new byte[BitConverter.ToUInt16(_data, 2)];
+            ID = BitConverter.ToUInt16(_data, 0);
+            packetDataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(ID);
+            Write(_data);
         }
 
         #region Functions
-        /// <summary>Sets the packet's content and prepares it to be read.</summary>
-        /// <param name="_data">The bytes to add to the packet.</param>
-        private void SetBytes(byte[] _data)
-        {
-            bufferList.Clear();
-            Write(_data);
-            bufferArray = bufferList.ToArray();
-        }
-
-        /// <summary>Gets the packet's content in array form.</summary>
-        public byte[] ToArray()
-        {
-            bufferArray = bufferList.ToArray();
-            return bufferArray;
-        }
 
         /// <summary>
         /// Gets the length of the total number of packets this packet will have to contain. Returns 0 if the current information inside packet is not enough to interpret this.
@@ -75,7 +96,7 @@ namespace Game.Networking
             ushort len = dataType.MinimumByteLength;
             for(int i = 2; i < dataType.StringPrimitveCount * 2 + 2; i += 2)
             {
-                len += BitConverter.ToUInt16(bufferArray, i);
+                len += BitConverter.ToUInt16(PacketBuffer, i);
             }
             return len;
         }
@@ -83,24 +104,27 @@ namespace Game.Networking
         /// <summary>Gets the length of the packet's content.</summary>
         public ushort Length()
         {
-            return (ushort)bufferList.Count; // Return the length of buffer
+            return (ushort)PacketBuffer.Length; // Return the length of buffer
         }
 
         /// <summary>Gets the length of the unread data contained in the packet.</summary>
         public ushort UnreadLength()
         {
-            return (ushort)(Length() - readPos); // Return the remaining length (unread)
+            return (ushort)(Length() - readWritePos); // Return the remaining length (unread)
         }
 
         /// <summary>Resets the packet instance to allow it to be reused. An ID is always mandatory for a packet. </summary>
-        public void Reset(int newID)
+        public void Reset(ushort newID)
         {
-            bufferList.Clear(); // Clear buffer
-            bufferArray = null;
-            readPos = 0; // Reset readPos
-
-            Write(newID);
+            InitializePacketWithID(newID);
         }
+
+        /// <summary>Resets the packet instance to allow it to be reused. An ID is always mandatory for a packet, and strict string rules apply. </summary>
+        public void Reset(ushort newID, string[] strings)
+        {
+            InitializePacketWithIDAndStrings(newID, strings);
+        }
+
         #endregion
 
         #region Write Data
@@ -108,67 +132,73 @@ namespace Game.Networking
         /// <param name="_value">The byte to add.</param>
         public void Write(byte _value)
         {
-            bufferList.Add(_value);
+            PacketBuffer[readWritePos] = _value;
+            readWritePos++;
         }
         /// <summary>Adds an array of bytes to the packet.</summary>
         /// <param name="_value">The byte array to add.</param>
         public void Write(byte[] _value)
         {
-            bufferList.AddRange(_value);
+            Buffer.BlockCopy(_value, 0, PacketBuffer, readWritePos, _value.Length);
+            readWritePos += _value.Length;
         }
         /// <summary>Adds a short to the packet.</summary>
         /// <param name="_value">The short to add.</param>
         public void Write(short _value)
         {
-            bufferList.AddRange(BitConverter.GetBytes(_value));
+            Buffer.BlockCopy(BitConverter.GetBytes(_value), 0, PacketBuffer, readWritePos, sizeof(short));
+            readWritePos += sizeof(short);
         }
         public void Write(ushort _value)
         {
-            bufferList.AddRange(BitConverter.GetBytes(_value));
+            Buffer.BlockCopy(BitConverter.GetBytes(_value), 0, PacketBuffer, readWritePos, sizeof(ushort));
+            readWritePos += sizeof(ushort);
         }
 
         /// <summary>Adds an int to the packet.</summary>
         /// <param name="_value">The int to add.</param>
         public void Write(int _value)
         {
-            bufferList.AddRange(BitConverter.GetBytes(_value));
+            Buffer.BlockCopy(BitConverter.GetBytes(_value), 0, PacketBuffer, readWritePos, sizeof(int));
+            readWritePos += sizeof(int);
         }
         /// <summary>Adds a long to the packet.</summary>
         /// <param name="_value">The long to add.</param>
         public void Write(long _value)
         {
-            bufferList.AddRange(BitConverter.GetBytes(_value));
+            Buffer.BlockCopy(BitConverter.GetBytes(_value), 0, PacketBuffer, readWritePos, sizeof(long));
+            readWritePos += sizeof(long);
         }
         /// <summary>Adds a float to the packet.</summary>
         /// <param name="_value">The float to add.</param>
         public void Write(float _value)
         {
-            bufferList.AddRange(BitConverter.GetBytes(_value));
+            Buffer.BlockCopy(BitConverter.GetBytes(_value), 0, PacketBuffer, readWritePos, sizeof(float));
+            readWritePos += sizeof(float);
         }
         /// <summary>Adds a double to the packet.</summary>
         /// <param name="_value">The float to add.</param>
         public void Write(double _value)
         {
-            bufferList.AddRange(BitConverter.GetBytes(_value));
+            Buffer.BlockCopy(BitConverter.GetBytes(_value), 0, PacketBuffer, readWritePos, sizeof(double));
+            readWritePos += sizeof(double);
         }
         /// <summary>Adds a bool to the packet.</summary>
         /// <param name="_value">The bool to add.</param>
         public void Write(bool _value)
         {
-            bufferList.AddRange(BitConverter.GetBytes(_value));
+            PacketBuffer[readWritePos] = Convert.ToByte(_value);
+            readWritePos += sizeof(bool);
         }
 
         /// <summary>Adds all the strings to the packet. The strings must be added in one go.</summary>
         /// <param name="_value">The string to add.</param>
-        public void Write(string[] _values)
+        private void Write(string[] _values)
         {
             for (int i = 0; i < _values.Length; i++)
             {
                 Write((ushort)_values[i].Length);
-            }
-            for (int i = 0; i < _values.Length; i++)
-            {
-                bufferList.AddRange(Encoding.ASCII.GetBytes(_values[i])); //TODO should we use ASCII or something else? 
+                Buffer.BlockCopy(Encoding.ASCII.GetBytes(_values[i]), 0, PacketBuffer, readWritePos, _values[i].Length);
             }
 
         }
@@ -180,12 +210,12 @@ namespace Game.Networking
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public byte ReadByte(bool _moveReadPos = true)
         {
-            if (bufferList.Count > readPos)
+            if (PacketBuffer.Length > readWritePos)
             {
-                byte _value = bufferArray[readPos];
+                byte _value = PacketBuffer[readWritePos];
                 if (_moveReadPos)
                 {
-                    readPos += sizeof(byte);
+                    readWritePos += sizeof(byte);
                 }
                 return _value;
             }
@@ -195,19 +225,20 @@ namespace Game.Networking
             }
         }
 
-        /// <summary>Reads an array of bytes from the packet.</summary>
+        /// <summary>Creates a new array of bytes consisting of length bytes of the packet and returns it.</summary>
         /// <param name="_length">The length of the byte array.</param>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public byte[] ReadBytes(int _length, bool _moveReadPos = true)
         {
-            if (bufferList.Count > readPos)
+            if (PacketBuffer.Length > readWritePos)
             {
-                byte[] _value = bufferList.GetRange(readPos, _length).ToArray();
+                var returned = new byte[_length];
+                Buffer.BlockCopy(PacketBuffer, readWritePos, returned, 0, _length);
                 if (_moveReadPos)
                 {
-                    readPos += _length;
+                    readWritePos += _length;
                 }
-                return _value;
+                return returned;
             }
             else
             {
@@ -219,12 +250,12 @@ namespace Game.Networking
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public short ReadShort(bool _moveReadPos = true)
         {
-            if (bufferList.Count > readPos)
+            if (PacketBuffer.Length > readWritePos)
             {
-                short _value = BitConverter.ToInt16(bufferArray, readPos);
+                short _value = BitConverter.ToInt16(PacketBuffer, readWritePos);
                 if (_moveReadPos)
                 {
-                    readPos += sizeof(short);
+                    readWritePos += sizeof(short);
                 }
                 return _value;
             }
@@ -238,12 +269,12 @@ namespace Game.Networking
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public ushort ReadUShort(bool _moveReadPos = true)
         {
-            if (bufferList.Count > readPos)
+            if (PacketBuffer.Length > readWritePos)
             {
-                ushort _value = BitConverter.ToUInt16(bufferArray, readPos);
+                ushort _value = BitConverter.ToUInt16(PacketBuffer, readWritePos);
                 if (_moveReadPos)
                 {
-                    readPos += sizeof(ushort);
+                    readWritePos += sizeof(ushort);
                 }
                 return _value;
             }
@@ -257,12 +288,12 @@ namespace Game.Networking
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public int ReadInt(bool _moveReadPos = true)
         {
-            if (bufferList.Count > readPos)
+            if (PacketBuffer.Length > readWritePos)
             {
-                int _value = BitConverter.ToInt32(bufferArray, readPos);
+                int _value = BitConverter.ToInt32(PacketBuffer, readWritePos);
                 if (_moveReadPos)
                 {
-                    readPos += sizeof(int);
+                    readWritePos += sizeof(int);
                 }
                 return _value;
             }
@@ -276,12 +307,12 @@ namespace Game.Networking
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public long ReadLong(bool _moveReadPos = true)
         {
-            if (bufferList.Count > readPos)
+            if (PacketBuffer.Length > readWritePos)
             {
-                long _value = BitConverter.ToInt64(bufferArray, readPos);
+                long _value = BitConverter.ToInt64(PacketBuffer, readWritePos);
                 if (_moveReadPos)
                 {
-                    readPos += sizeof(long);
+                    readWritePos += sizeof(long);
                 }
                 return _value;
             }
@@ -295,12 +326,12 @@ namespace Game.Networking
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public float ReadFloat(bool _moveReadPos = true)
         {
-            if (bufferList.Count > readPos)
+            if (PacketBuffer.Length > readWritePos)
             {
-                float _value = BitConverter.ToSingle(bufferArray, readPos); // Convert the bytes to a float
+                float _value = BitConverter.ToSingle(PacketBuffer, readWritePos); // Convert the bytes to a float
                 if (_moveReadPos)
                 {
-                    readPos += sizeof(float);
+                    readWritePos += sizeof(float);
                 }
                 return _value;
             }
@@ -314,12 +345,12 @@ namespace Game.Networking
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public double ReadDouble(bool _moveReadPos = true)
         {
-            if (bufferList.Count > readPos)
+            if (PacketBuffer.Length > readWritePos)
             {
-                double _value = BitConverter.ToDouble(bufferArray, readPos); // Convert the bytes to a float
+                double _value = BitConverter.ToDouble(PacketBuffer, readWritePos); // Convert the bytes to a float
                 if (_moveReadPos)
                 {
-                    readPos += sizeof(float);
+                    readWritePos += sizeof(float);
                 }
                 return _value;
             }
@@ -333,12 +364,12 @@ namespace Game.Networking
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public bool ReadBool(bool _moveReadPos = true)
         {
-            if (bufferList.Count > readPos)
+            if (PacketBuffer.Length > readWritePos)
             {
-                bool _value = BitConverter.ToBoolean(bufferArray, readPos); // Convert the bytes to a bool
+                bool _value = BitConverter.ToBoolean(PacketBuffer, readWritePos); // Convert the bytes to a bool
                 if (_moveReadPos)
                 {
-                    readPos += sizeof(bool);
+                    readWritePos += sizeof(bool);
                 }
                 return _value;
             }
@@ -354,14 +385,17 @@ namespace Game.Networking
         {
             try
             {
-                int _length = ReadInt(); // Get the length of the string
-                string _value = Encoding.ASCII.GetString(bufferArray, readPos, _length); // Convert the bytes to a string
-                if (_moveReadPos && _value.Length > 0)
+                ushort _length = ReadUShort();
+                string _value = Encoding.ASCII.GetString(PacketBuffer, readWritePos, _length); //TODO: ASCII OR UTF-8 DECIDE!
+                if (_moveReadPos)
                 {
-                    // If _moveReadPos is true string is not empty
-                    readPos += _length; // Increase readPos by the length of the string
+                    readWritePos += _length;
                 }
-                return _value; // Return the string
+                else
+                {
+                    readWritePos -= 2; //since we read length.
+                }
+                return _value;
             }
             catch
             {
@@ -378,9 +412,8 @@ namespace Game.Networking
             {
                 if (_disposing)
                 {
-                    bufferList = null;
-                    bufferArray = null;
-                    readPos = 0;
+                    PacketBuffer = null;
+                    readWritePos = 0;
                 }
 
                 disposed = true;
