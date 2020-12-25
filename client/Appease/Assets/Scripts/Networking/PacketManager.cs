@@ -26,6 +26,10 @@ namespace Game.Networking
             }
         }
 
+        public PacketDataType GetPacketDataFromID(ushort ID)
+        {
+            return idToPacketDataType[ID];
+        }
     }
 
     [Serializable]

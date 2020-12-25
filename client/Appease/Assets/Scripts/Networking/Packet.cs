@@ -29,22 +29,23 @@ namespace Game.Networking
             ID = _id;
         }
 
-        /// <summary>Creates a packet from which data can be read. Used for receiving. Also automatically sets the ID of the packet. </summary>
+        /// <summary>Creates a packet from which data can be read. Used for receiving. Also automatically sets the ID of the packet. As such, the given data must at
+        /// least have a ushort header. </summary>
         /// <param name="_data">The bytes to add to the packet.</param>
         public Packet(byte[] _data)
         {
             bufferList = new List<byte>(); // Intitialize buffer
             readPos = 0; // Set readPos to 0
 
+            SetBytes(_data);
             ID = ReadUShort(true);
 
-            SetBytes(_data);
         }
 
         #region Functions
         /// <summary>Sets the packet's content and prepares it to be read.</summary>
         /// <param name="_data">The bytes to add to the packet.</param>
-        public void SetBytes(byte[] _data)
+        private void SetBytes(byte[] _data)
         {
             bufferList.Clear();
             Write(_data);
@@ -58,16 +59,37 @@ namespace Game.Networking
             return bufferArray;
         }
 
-        /// <summary>Gets the length of the packet's content.</summary>
-        public int Length()
+        /// <summary>
+        /// Gets the length of the total number of packets this packet will have to contain. Returns 0 if the current information inside packet is not enough to interpret this.
+        /// </summary>
+        public ushort InterpretReadTotalCompleteLength()
         {
-            return bufferList.Count; // Return the length of buffer
+            var dataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(ID);
+
+            if (dataType.StringPrimitveCount == 0)
+                return dataType.MinimumByteLength;
+
+            if (Length() - 2 < dataType.StringPrimitveCount * 2)
+                return 0;
+
+            ushort len = dataType.MinimumByteLength;
+            for(int i = 2; i < dataType.StringPrimitveCount * 2 + 2; i += 2)
+            {
+                len += BitConverter.ToUInt16(bufferArray, i);
+            }
+            return len;
+        }
+
+        /// <summary>Gets the length of the packet's content.</summary>
+        public ushort Length()
+        {
+            return (ushort)bufferList.Count; // Return the length of buffer
         }
 
         /// <summary>Gets the length of the unread data contained in the packet.</summary>
-        public int UnreadLength()
+        public ushort UnreadLength()
         {
-            return Length() - readPos; // Return the remaining length (unread)
+            return (ushort)(Length() - readPos); // Return the remaining length (unread)
         }
 
         /// <summary>Resets the packet instance to allow it to be reused. An ID is always mandatory for a packet. </summary>
@@ -135,12 +157,20 @@ namespace Game.Networking
         {
             bufferList.AddRange(BitConverter.GetBytes(_value));
         }
-        /// <summary>Adds a string to the packet.</summary>
+
+        /// <summary>Adds all the strings to the packet. The strings must be added in one go.</summary>
         /// <param name="_value">The string to add.</param>
-        public void Write(string _value)
+        public void Write(string[] _values)
         {
-            Write(_value.Length); // Add the length of the string to the packet
-            bufferList.AddRange(Encoding.ASCII.GetBytes(_value)); // Add the string itself
+            for (int i = 0; i < _values.Length; i++)
+            {
+                Write((ushort)_values[i].Length);
+            }
+            for (int i = 0; i < _values.Length; i++)
+            {
+                bufferList.AddRange(Encoding.ASCII.GetBytes(_values[i])); //TODO should we use ASCII or something else? 
+            }
+
         }
 
         #endregion
