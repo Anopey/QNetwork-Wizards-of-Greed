@@ -89,7 +89,7 @@ namespace Game.Networking
             {
                 try
                 {
-                    stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+                    stream.BeginWrite(packet.PacketBuffer, 0, packet.Length(), null, null);
                 }
                 catch(Exception e)
                 {
