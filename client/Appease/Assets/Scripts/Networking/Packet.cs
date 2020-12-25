@@ -20,7 +20,7 @@ namespace Game.Networking
         private void InitializePacketWithID(ushort _id)
         {
             packetDataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(_id);
-            readWritePos = 4; 
+            readWritePos = 4;
             PacketBuffer = new byte[packetDataType.MinimumByteLength];
             Write(_id); // Write packet id to the buffer
             Write(packetDataType.MinimumByteLength);
@@ -71,7 +71,7 @@ namespace Game.Networking
         /// <summary>Creates a packet from which data can be read. Used for receiving. The passed byte array must at least contain the initial ID and length ushorts </summary>
         public Packet(byte[] _data)
         {
-            readWritePos = 4; 
+            readWritePos = 4;
             PacketBuffer = new byte[BitConverter.ToUInt16(_data, 2)];
             ID = BitConverter.ToUInt16(_data, 0);
             packetDataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(ID);
@@ -94,7 +94,7 @@ namespace Game.Networking
                 return 0;
 
             ushort len = dataType.MinimumByteLength;
-            for(int i = 2; i < dataType.StringPrimitveCount * 2 + 2; i += 2)
+            for (int i = 2; i < dataType.StringPrimitveCount * 2 + 2; i += 2)
             {
                 len += BitConverter.ToUInt16(PacketBuffer, i);
             }
@@ -123,6 +123,11 @@ namespace Game.Networking
         public void Reset(ushort newID, string[] strings)
         {
             InitializePacketWithIDAndStrings(newID, strings);
+        }
+
+        public void SetReadWritePos(ushort newPos)
+        {
+            readWritePos = newPos;
         }
 
         #endregion
@@ -207,16 +212,12 @@ namespace Game.Networking
 
         #region Read Data
         /// <summary>Reads a byte from the packet.</summary>
-        /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-        public byte ReadByte(bool _moveReadPos = true)
+        public byte ReadByte()
         {
             if (PacketBuffer.Length > readWritePos)
             {
                 byte _value = PacketBuffer[readWritePos];
-                if (_moveReadPos)
-                {
-                    readWritePos += sizeof(byte);
-                }
+                readWritePos += sizeof(byte);
                 return _value;
             }
             else
@@ -227,180 +228,86 @@ namespace Game.Networking
 
         /// <summary>Creates a new array of bytes consisting of length bytes of the packet and returns it.</summary>
         /// <param name="_length">The length of the byte array.</param>
-        /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-        public byte[] ReadBytes(int _length, bool _moveReadPos = true)
+        public byte[] ReadBytes(int _length)
         {
-            if (PacketBuffer.Length > readWritePos)
-            {
-                var returned = new byte[_length];
-                Buffer.BlockCopy(PacketBuffer, readWritePos, returned, 0, _length);
-                if (_moveReadPos)
-                {
-                    readWritePos += _length;
-                }
-                return returned;
-            }
-            else
-            {
-                throw new Exception("Could not read value of type 'byte[]'!");
-            }
+            var returned = new byte[_length];
+            Buffer.BlockCopy(PacketBuffer, readWritePos, returned, 0, _length);
+            return returned;
+
         }
 
         /// <summary>Reads a short from the packet.</summary>
-        /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public short ReadShort(bool _moveReadPos = true)
         {
-            if (PacketBuffer.Length > readWritePos)
-            {
-                short _value = BitConverter.ToInt16(PacketBuffer, readWritePos);
-                if (_moveReadPos)
-                {
-                    readWritePos += sizeof(short);
-                }
-                return _value;
-            }
-            else
-            {
-                throw new Exception("Could not read value of type 'short'!");
-            }
+            short _value = BitConverter.ToInt16(PacketBuffer, readWritePos);
+            readWritePos += sizeof(short);
+            return _value;
+
         }
 
         /// <summary>Reads a short from the packet.</summary>
-        /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-        public ushort ReadUShort(bool _moveReadPos = true)
+        public ushort ReadUShort()
         {
-            if (PacketBuffer.Length > readWritePos)
-            {
-                ushort _value = BitConverter.ToUInt16(PacketBuffer, readWritePos);
-                if (_moveReadPos)
-                {
-                    readWritePos += sizeof(ushort);
-                }
-                return _value;
-            }
-            else
-            {
-                throw new Exception("Could not read value of type 'short'!");
-            }
+
+            ushort _value = BitConverter.ToUInt16(PacketBuffer, readWritePos);
+            readWritePos += sizeof(ushort);
+            return _value;
         }
 
         /// <summary>Reads an int from the packet.</summary>
-        /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-        public int ReadInt(bool _moveReadPos = true)
+        public int ReadInt()
         {
-            if (PacketBuffer.Length > readWritePos)
-            {
-                int _value = BitConverter.ToInt32(PacketBuffer, readWritePos);
-                if (_moveReadPos)
-                {
-                    readWritePos += sizeof(int);
-                }
-                return _value;
-            }
-            else
-            {
-                throw new Exception("Could not read value of type 'int'!");
-            }
+            int _value = BitConverter.ToInt32(PacketBuffer, readWritePos);
+            readWritePos += sizeof(int);
+            return _value;
+
         }
 
         /// <summary>Reads a long from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public long ReadLong(bool _moveReadPos = true)
         {
-            if (PacketBuffer.Length > readWritePos)
-            {
-                long _value = BitConverter.ToInt64(PacketBuffer, readWritePos);
-                if (_moveReadPos)
-                {
-                    readWritePos += sizeof(long);
-                }
-                return _value;
-            }
-            else
-            {
-                throw new Exception("Could not read value of type 'long'!");
-            }
+            long _value = BitConverter.ToInt64(PacketBuffer, readWritePos);
+            readWritePos += sizeof(long);
+            return _value;
+
         }
 
         /// <summary>Reads a float from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public float ReadFloat(bool _moveReadPos = true)
         {
-            if (PacketBuffer.Length > readWritePos)
-            {
-                float _value = BitConverter.ToSingle(PacketBuffer, readWritePos); // Convert the bytes to a float
-                if (_moveReadPos)
-                {
-                    readWritePos += sizeof(float);
-                }
-                return _value;
-            }
-            else
-            {
-                throw new Exception("Could not read value of type 'float'!");
-            }
+            float _value = BitConverter.ToSingle(PacketBuffer, readWritePos); // Convert the bytes to a float
+            readWritePos += sizeof(float);
+            return _value;
         }
 
         /// <summary>Reads a double from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public double ReadDouble(bool _moveReadPos = true)
         {
-            if (PacketBuffer.Length > readWritePos)
-            {
-                double _value = BitConverter.ToDouble(PacketBuffer, readWritePos); // Convert the bytes to a float
-                if (_moveReadPos)
-                {
-                    readWritePos += sizeof(float);
-                }
-                return _value;
-            }
-            else
-            {
-                throw new Exception("Could not read value of type 'float'!");
-            }
+            double _value = BitConverter.ToDouble(PacketBuffer, readWritePos); // Convert the bytes to a float
+            readWritePos += sizeof(float);
+            return _value;
         }
 
         /// <summary>Reads a bool from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public bool ReadBool(bool _moveReadPos = true)
         {
-            if (PacketBuffer.Length > readWritePos)
-            {
-                bool _value = BitConverter.ToBoolean(PacketBuffer, readWritePos); // Convert the bytes to a bool
-                if (_moveReadPos)
-                {
-                    readWritePos += sizeof(bool);
-                }
-                return _value;
-            }
-            else
-            {
-                throw new Exception("Could not read value of type 'bool'!");
-            }
+            bool _value = BitConverter.ToBoolean(PacketBuffer, readWritePos); // Convert the bytes to a bool
+            readWritePos += sizeof(bool);
+            return _value;
         }
 
         /// <summary>Reads a string from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public string ReadString(bool _moveReadPos = true)
         {
-            try
-            {
-                ushort _length = ReadUShort();
-                string _value = Encoding.ASCII.GetString(PacketBuffer, readWritePos, _length); //TODO: ASCII OR UTF-8 DECIDE!
-                if (_moveReadPos)
-                {
-                    readWritePos += _length;
-                }
-                else
-                {
-                    readWritePos -= 2; //since we read length.
-                }
-                return _value;
-            }
-            catch
-            {
-                throw new Exception("Could not read value of type 'string'!");
-            }
+            ushort _length = ReadUShort();
+            string _value = Encoding.ASCII.GetString(PacketBuffer, readWritePos, _length); //TODO: ASCII OR UTF-8 DECIDE!
+            readWritePos += _length;
+            return _value;
         }
         #endregion
 

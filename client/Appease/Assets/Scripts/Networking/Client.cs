@@ -127,7 +127,7 @@ namespace Game.Networking
                     byte[] data = new byte[byteLength];
                     Array.Copy(receiveBuffer, data, byteLength);
 
-                    //TODO: Handle Data
+                    HandleData(data);
 
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
@@ -135,6 +135,20 @@ namespace Game.Networking
                 {
                     Debug.LogError("Error during read from server: \n" + e.Message);
                     //TODO: Disconnect
+                }
+            }
+
+            private void HandleData(byte[] _data)
+            {
+                if(recievedData == null)
+                {
+                    //Start reading a new packet.
+
+                }
+                else
+                {
+                    //ongoing packet
+
                 }
             }
         }
