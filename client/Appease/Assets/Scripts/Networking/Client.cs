@@ -11,7 +11,7 @@ namespace Game.Networking
     public class Client : MonoBehaviour
     {
 
-        public static readonly int dataBufferSize = 4096;
+        public static readonly ushort dataBufferSize = 4096;
 
 
         private TCP _tcp;
@@ -127,9 +127,9 @@ namespace Game.Networking
                     byte[] data = new byte[byteLength];
                     Array.Copy(receiveBuffer, data, byteLength);
 
-                    HandleData(data);
 
-                    stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+
+                    stream.BeginRead(receiveBuffer, 0, HandleData(data), ReceiveCallback, null);
                 }
                 catch (Exception e)
                 {
@@ -138,7 +138,7 @@ namespace Game.Networking
                 }
             }
 
-            private void HandleData(byte[] _data)
+            private ushort HandleData(byte[] _data)
             {
                 if(recievedData == null)
                 {
@@ -152,8 +152,8 @@ namespace Game.Networking
                 {
                     //ongoing packet
 
-                    if (recievedData.ExpectedLength < recievedData.Length + _data.Length)
-                        Debug.LogError("Ok so a packet and the start of another packet can get mixed up it seems. Readjust accordingly!");
+                    //if (recievedData.ExpectedLength < recievedData.Length + _data.Length)
+                    //    Debug.LogError("Ok so a packet and the start of another packet can get mixed up it seems. Readjust accordingly!");
                     
                     recievedData.Write(_data);
 
@@ -166,7 +166,12 @@ namespace Game.Networking
                             recievedData = null;
                         });
                     }
+                    else
+                    {
+                        return (ushort)(recievedData.ExpectedLength - recievedData.Length);
+                    }
                 }
+                return dataBufferSize;
             }
         }
     }
