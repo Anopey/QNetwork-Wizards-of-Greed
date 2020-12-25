@@ -14,22 +14,24 @@ namespace Game.Networking
         private int readWritePos;
 
         public ushort ID { get; private set; }
+        public ushort ExpectedLength { get; private set; }
 
-        private PacketDataType packetDataType;
+        public PacketDataType DataType { get; private set; }
 
         private void InitializePacketWithID(ushort _id)
         {
-            packetDataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(_id);
+            DataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(_id);
             readWritePos = 4;
-            PacketBuffer = new byte[packetDataType.MinimumByteLength];
+            PacketBuffer = new byte[DataType.MinimumByteLength];
             Write(_id); // Write packet id to the buffer
-            Write(packetDataType.MinimumByteLength);
+            Write(DataType.MinimumByteLength);
+            ExpectedLength = DataType.MinimumByteLength;
             ID = _id;
         }
 
         private void InitializePacketWithIDAndStrings(ushort _id, string[] strings)
         {
-            packetDataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(_id);
+            DataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(_id);
             readWritePos = 4;
 
             ushort strlen = 0;
@@ -39,9 +41,10 @@ namespace Game.Networking
                 strlen += (ushort)strings[i].Length;
             }
 
-            PacketBuffer = new byte[packetDataType.MinimumByteLength + strlen];
+            PacketBuffer = new byte[DataType.MinimumByteLength + strlen];
             Write(_id); // Write packet id to the buffer
-            Write((ushort)(packetDataType.MinimumByteLength + strlen));
+            ExpectedLength = (ushort)(DataType.MinimumByteLength + strlen);
+            Write(ExpectedLength);
             ID = _id;
 
             Write(strings);
@@ -72,46 +75,19 @@ namespace Game.Networking
         public Packet(byte[] _data)
         {
             readWritePos = 4;
-            PacketBuffer = new byte[BitConverter.ToUInt16(_data, 2)];
+            ExpectedLength = BitConverter.ToUInt16(_data, 2);
+            PacketBuffer = new byte[ExpectedLength];
             ID = BitConverter.ToUInt16(_data, 0);
-            packetDataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(ID);
+            DataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(ID);
             Write(_data);
         }
 
         #region Functions
 
-        /// <summary>
-        /// Gets the length of the total number of packets this packet will have to contain. Returns 0 if the current information inside packet is not enough to interpret this.
-        /// </summary>
-        public ushort InterpretReadTotalCompleteLength()
-        {
-            var dataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(ID);
+        public ushort Length { get { return (ushort)PacketBuffer.Length;} }
 
-            if (dataType.StringPrimitveCount == 0)
-                return dataType.MinimumByteLength;
+        public ushort UnreadLength { get { return (ushort)(Length - readWritePos); } }
 
-            if (Length() - 2 < dataType.StringPrimitveCount * 2)
-                return 0;
-
-            ushort len = dataType.MinimumByteLength;
-            for (int i = 2; i < dataType.StringPrimitveCount * 2 + 2; i += 2)
-            {
-                len += BitConverter.ToUInt16(PacketBuffer, i);
-            }
-            return len;
-        }
-
-        /// <summary>Gets the length of the packet's content.</summary>
-        public ushort Length()
-        {
-            return (ushort)PacketBuffer.Length; // Return the length of buffer
-        }
-
-        /// <summary>Gets the length of the unread data contained in the packet.</summary>
-        public ushort UnreadLength()
-        {
-            return (ushort)(Length() - readWritePos); // Return the remaining length (unread)
-        }
 
         /// <summary>Resets the packet instance to allow it to be reused. An ID is always mandatory for a packet. </summary>
         public void Reset(ushort newID)
@@ -233,7 +209,6 @@ namespace Game.Networking
             var returned = new byte[_length];
             Buffer.BlockCopy(PacketBuffer, readWritePos, returned, 0, _length);
             return returned;
-
         }
 
         /// <summary>Reads a short from the packet.</summary>
@@ -248,7 +223,6 @@ namespace Game.Networking
         /// <summary>Reads a short from the packet.</summary>
         public ushort ReadUShort()
         {
-
             ushort _value = BitConverter.ToUInt16(PacketBuffer, readWritePos);
             readWritePos += sizeof(ushort);
             return _value;
@@ -260,7 +234,6 @@ namespace Game.Networking
             int _value = BitConverter.ToInt32(PacketBuffer, readWritePos);
             readWritePos += sizeof(int);
             return _value;
-
         }
 
         /// <summary>Reads a long from the packet.</summary>
@@ -270,7 +243,6 @@ namespace Game.Networking
             long _value = BitConverter.ToInt64(PacketBuffer, readWritePos);
             readWritePos += sizeof(long);
             return _value;
-
         }
 
         /// <summary>Reads a float from the packet.</summary>

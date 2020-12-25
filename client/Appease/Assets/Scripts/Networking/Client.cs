@@ -89,7 +89,7 @@ namespace Game.Networking
             {
                 try
                 {
-                    stream.BeginWrite(packet.PacketBuffer, 0, packet.Length(), null, null);
+                    stream.BeginWrite(packet.PacketBuffer, 0, packet.Length, null, null);
                 }
                 catch(Exception e)
                 {
@@ -143,12 +143,29 @@ namespace Game.Networking
                 if(recievedData == null)
                 {
                     //Start reading a new packet.
+                    if (_data.Length < 4)
+                        Debug.LogError("Now we know that we actually can get lower than 4 bytes at the start of a new packet. Readjust accordingly!");
 
+                    recievedData = new Packet(_data);
                 }
                 else
                 {
                     //ongoing packet
 
+                    if (recievedData.ExpectedLength < recievedData.Length + _data.Length)
+                        Debug.LogError("Ok so a packet and the start of another packet can get mixed up it seems. Readjust accordingly!");
+                    
+                    recievedData.Write(_data);
+
+                    if(recievedData.Length == recievedData.ExpectedLength)
+                    {
+                        //our packet is now complete!
+                        NetworkManager.ExecuteOnMainThread(() =>
+                        {
+                            recievedData.DataType.Handler.Invoke(recievedData);
+                            recievedData = null;
+                        });
+                    }
                 }
             }
         }
