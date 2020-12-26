@@ -5,8 +5,7 @@ using UnityEngine;
 
 namespace Game.Networking
 {
-    [CreateAssetMenu(fileName = "NetworkManager", menuName = "Networking/PacketHandler", order = 2)]
-    public class PacketHandler : ScriptableObject
+    public abstract class PacketHandler : ScriptableObject
     {
 
         [SerializeField]
@@ -14,10 +13,12 @@ namespace Game.Networking
 
         public TypeCode[] ExpectedPrimitives { get { return expectedPrimitives; } }
 
-        public void ProcessPacket(Packet packet)
+        public void OnPacketRecieved(Packet packet)
         {
-
+            ProcessPacket(packet);
         }
+
+        protected abstract void ProcessPacket(Packet packet);
 
     }
 

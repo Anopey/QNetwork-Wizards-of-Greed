@@ -121,10 +121,10 @@ namespace Game.Networking
         {
             foreach(var handler in Handlers)
             {
-                if(handler.ExpectedPrimitives.Length != Primitives.Length)
-                {
-                    Debug.LogError("Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
-                }
+                //if(handler.ExpectedPrimitives.Length != Primitives.Length)
+                //{
+                //    Debug.LogError("Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
+                //}
                 for(int i = 0; i < handler.ExpectedPrimitives.Length; i++)
                 {
                     if(handler.ExpectedPrimitives[i] != Primitives[i])
@@ -149,7 +149,7 @@ namespace Game.Networking
         {
             for(int i = 0; i < Handlers.Length; i++)
             {
-                Handlers[i].ProcessPacket(p);
+                Handlers[i].OnPacketRecieved(p);
             }
         }
 
