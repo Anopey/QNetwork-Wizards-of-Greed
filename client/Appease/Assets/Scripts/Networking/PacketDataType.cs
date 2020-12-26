@@ -14,7 +14,8 @@ namespace Game.Networking
 
         public ushort ID;
 
-        public UnityEvent<Packet> Handler;
+        [SerializeField]
+        private PacketHandler[] Handlers;
 
         public TypeCode[] Primitives;
 
@@ -28,6 +29,7 @@ namespace Game.Networking
         {
             CalculateMinimumByteLength();
             CalculateStringPrimitive();
+            VerifyHandlers();
         }
 
         private void CalculateMinimumByteLength()
@@ -115,6 +117,24 @@ namespace Game.Networking
 
         }
 
+        private void VerifyHandlers()
+        {
+            foreach(var handler in Handlers)
+            {
+                if(handler.ExpectedPrimitives.Length != Primitives.Length)
+                {
+                    Debug.LogError("Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
+                }
+                for(int i = 0; i < handler.ExpectedPrimitives.Length; i++)
+                {
+                    if(handler.ExpectedPrimitives[i] != Primitives[i])
+                    {
+                        Debug.LogError("Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// This is called minimum since a string can be indefinitely long.
         /// </summary>
@@ -124,6 +144,15 @@ namespace Game.Networking
         /// All Strings should be at the start of the packet, their counts written first, all after ID.
         /// </summary>
         public ushort StringPrimitveCount { get { return stringPrimitiveCount; } }
+
+        public void OnPacketRecieved(Packet p)
+        {
+            for(int i = 0; i < Handlers.Length; i++)
+            {
+                Handlers[i].ProcessPacket(p);
+            }
+        }
+
     }
 
 }

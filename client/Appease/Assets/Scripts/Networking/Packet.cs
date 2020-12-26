@@ -212,7 +212,7 @@ namespace Game.Networking
         }
 
         /// <summary>Reads a short from the packet.</summary>
-        public short ReadShort(bool _moveReadPos = true)
+        public short ReadShort()
         {
             short _value = BitConverter.ToInt16(PacketBuffer, readWritePos);
             readWritePos += sizeof(short);
@@ -238,7 +238,7 @@ namespace Game.Networking
 
         /// <summary>Reads a long from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-        public long ReadLong(bool _moveReadPos = true)
+        public long ReadLong()
         {
             long _value = BitConverter.ToInt64(PacketBuffer, readWritePos);
             readWritePos += sizeof(long);
@@ -247,7 +247,7 @@ namespace Game.Networking
 
         /// <summary>Reads a float from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-        public float ReadFloat(bool _moveReadPos = true)
+        public float ReadFloat()
         {
             float _value = BitConverter.ToSingle(PacketBuffer, readWritePos); // Convert the bytes to a float
             readWritePos += sizeof(float);
@@ -256,7 +256,7 @@ namespace Game.Networking
 
         /// <summary>Reads a double from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-        public double ReadDouble(bool _moveReadPos = true)
+        public double ReadDouble()
         {
             double _value = BitConverter.ToDouble(PacketBuffer, readWritePos); // Convert the bytes to a float
             readWritePos += sizeof(float);
@@ -265,7 +265,7 @@ namespace Game.Networking
 
         /// <summary>Reads a bool from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-        public bool ReadBool(bool _moveReadPos = true)
+        public bool ReadBool()
         {
             bool _value = BitConverter.ToBoolean(PacketBuffer, readWritePos); // Convert the bytes to a bool
             readWritePos += sizeof(bool);
@@ -274,7 +274,7 @@ namespace Game.Networking
 
         /// <summary>Reads a string from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-        public string ReadString(bool _moveReadPos = true)
+        public string ReadString()
         {
             ushort _length = ReadUShort();
             string _value = Encoding.ASCII.GetString(PacketBuffer, readWritePos, _length); //TODO: ASCII OR UTF-8 DECIDE!

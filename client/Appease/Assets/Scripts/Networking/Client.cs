@@ -8,7 +8,8 @@ using System;
 namespace Game.Networking
 {
 
-    public class Client : MonoBehaviour
+    [CreateAssetMenu(fileName = "Client", menuName = "Networking/Base/Client", order = 1)]
+    public class Client : ScriptableObject
     {
 
         public static readonly ushort dataBufferSize = 4096;
@@ -37,6 +38,7 @@ namespace Game.Networking
                 return;
             }
             Singleton = this;
+            _tcp = new TCP();
         }
 
         private void OnDestroy()
@@ -47,11 +49,6 @@ namespace Game.Networking
 
 
         #endregion
-
-        private void Start()
-        {
-            _tcp = new TCP();
-        }
 
 
         public void ConnectToServer()
@@ -162,7 +159,7 @@ namespace Game.Networking
                         //our packet is now complete!
                         NetworkManager.ExecuteOnMainThread(() =>
                         {
-                            recievedData.DataType.Handler.Invoke(recievedData);
+                            recievedData.DataType.OnPacketRecieved(recievedData);
                             recievedData = null;
                         });
                     }

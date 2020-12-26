@@ -5,16 +5,14 @@ using System;
 
 namespace Game.Networking
 {
-
-    public class NetworkManager : MonoBehaviour
+    [CreateAssetMenu(fileName = "NetworkManager", menuName = "Networking/Base/NetworkManager", order = 1)]
+    public class NetworkManager : ScriptableObject
     {
 
         public static NetworkManager Singleton { get; private set; }
 
         [SerializeField]
         private PacketManagerArgs packetManagerArgs;
-
-
 
         public PacketManager PacketManager { get; private set; }
 
@@ -24,7 +22,7 @@ namespace Game.Networking
         {
             if(Singleton != null)
             {
-                Destroy(gameObject);
+                Debug.LogError("Two instances of NetworkManager cannot exist!");
                 return;
             }
             Singleton = this;
