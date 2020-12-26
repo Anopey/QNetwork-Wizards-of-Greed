@@ -25,11 +25,13 @@ namespace Game.Networking
 
         private ushort lengthToTellRealLength;
 
+        private Action<Packet> packetRecieved;
+
         private void Awake()
         {
             CalculateMinimumByteLength();
             CalculateStringPrimitive();
-            VerifyHandlers();
+            VerifyPrepareHandlers();
         }
 
         private void CalculateMinimumByteLength()
@@ -117,7 +119,7 @@ namespace Game.Networking
 
         }
 
-        private void VerifyHandlers()
+        private void VerifyPrepareHandlers()
         {
             foreach(var handler in Handlers)
             {
@@ -132,6 +134,8 @@ namespace Game.Networking
                         Debug.LogError("Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
                     }
                 }
+
+                packetRecieved += handler.OnPacketRecieved;
             }
         }
 
@@ -147,10 +151,7 @@ namespace Game.Networking
 
         public void OnPacketRecieved(Packet p)
         {
-            for(int i = 0; i < Handlers.Length; i++)
-            {
-                Handlers[i].OnPacketRecieved(p);
-            }
+            packetRecieved?.Invoke(p);
         }
 
     }
