@@ -14,14 +14,9 @@ namespace Game.Debugging
 
         public override TypeCode[] ExpectedPrimitives { get { return expected; } }
 
-        public static void HandleSimpleMessagePacket(Packet p)
-        {
-            Debug.Log(p.ReadString());
-        }
-
         protected override void ProcessPacket(Packet packet)
         {
-            
+            Debug.Log(p.ReadString());
         }
     }
 
