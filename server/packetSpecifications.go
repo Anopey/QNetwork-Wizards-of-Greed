@@ -9,7 +9,7 @@ import (
 type kind = reflect.Kind
 
 func initializePackets() *packet.PacketManager {
-	pm := packet.NewPacketManager()
+	pm := packet.GetPacketManager()
 
 	//simple messages
 	pm.RegisterPacketDataType(&packet.PacketDataType{

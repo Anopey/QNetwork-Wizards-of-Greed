@@ -3,7 +3,12 @@ package packet
 import (
 	"reflect"
 	"strconv"
+	"sync"
 )
+
+var once sync.Once
+
+var singleton PacketManager
 
 type PacketHandler func(pd *PacketDataType, p *Packet)
 
@@ -21,11 +26,15 @@ type PacketManager struct {
 	packets map[uint16]*PacketDataType
 }
 
-func NewPacketManager() *PacketManager {
-	pm := PacketManager{
-		packets: make(map[uint16]*PacketDataType),
-	}
-	return &pm
+func GetPacketManager() *PacketManager {
+
+	once.Do(func() {
+		singleton = PacketManager{
+			packets: make(map[uint16]*PacketDataType),
+		}
+	})
+
+	return &singleton
 }
 
 func (pm *PacketManager) RegisterPacketDataType(p *PacketDataType) {
@@ -35,6 +44,10 @@ func (pm *PacketManager) RegisterPacketDataType(p *PacketDataType) {
 	}
 	pm.packets[p.ID] = p
 	p.calculateMinimumByteLength()
+}
+
+func (pm *PacketManager) GetPacketDataType(id uint16) *PacketDataType {
+	return pm.packets[id]
 }
 
 func (pd *PacketDataType) calculateMinimumByteLength() {
