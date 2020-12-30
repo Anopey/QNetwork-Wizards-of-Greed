@@ -6,7 +6,7 @@ namespace Game.Debugging
 {
     using Networking;
 
-    public class DebugHandlers : ScriptableObject
+    public class DebugHandlers : PacketHandler
     {
 
         public static void HandleSimpleMessagePacket(Packet p)
@@ -14,8 +14,10 @@ namespace Game.Debugging
             Debug.Log(p.ReadString());
         }
 
-
-
+        protected override void ProcessPacket(Packet packet)
+        {
+            
+        }
     }
 
 }

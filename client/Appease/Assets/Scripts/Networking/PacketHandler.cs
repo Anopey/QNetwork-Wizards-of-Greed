@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace Game.Networking
 {
+    [Serializable]
     public abstract class PacketHandler : ScriptableObject
     {
 
-        [SerializeField]
         private TypeCode[] expectedPrimitives;
 
         public TypeCode[] ExpectedPrimitives { get { return expectedPrimitives; } }

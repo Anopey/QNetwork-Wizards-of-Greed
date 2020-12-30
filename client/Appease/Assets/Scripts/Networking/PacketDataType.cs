@@ -29,6 +29,17 @@ namespace Game.Networking
 
         private void Awake()
         {
+#if UNITY_EDITOR
+            if (Handlers.Length == 0) //no need to bug developer during development.
+            {
+                return;
+            }
+#else
+            if (Handlers.Length == 0)
+            {
+                Debug.LogError("Packet data type with ID " + ID.ToString() + " has no handlers assigned!");
+            }
+#endif
             CalculateMinimumByteLength();
             CalculateStringPrimitive();
             VerifyPrepareHandlers();
