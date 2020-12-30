@@ -46,7 +46,6 @@ namespace Game.UI
             Client.Singleton.ConnectToServer();
         }
 
-
     }
 
 }

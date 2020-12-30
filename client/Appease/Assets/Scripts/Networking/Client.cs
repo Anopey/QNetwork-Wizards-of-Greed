@@ -30,18 +30,20 @@ namespace Game.Networking
 
         public static Client Singleton { get; private set; }
 
-        private void Awake()
+        private void OnEnable()
         {
+            Debug.Log("Client initializing...");
             if (Singleton != null)
             {
                 Destroy(this);
                 return;
             }
+            Debug.Log("Client initialized.");
             Singleton = this;
             _tcp = new TCP();
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             if (Singleton == this)
                 Singleton = null;

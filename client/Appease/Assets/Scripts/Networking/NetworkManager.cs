@@ -18,7 +18,7 @@ namespace Game.Networking
 
         #region Singleton Architecture
 
-        private void Awake()
+        private void OnEnable()
         {
             if(Singleton != null)
             {
@@ -29,7 +29,7 @@ namespace Game.Networking
             Initialize();
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             if (Singleton == this)
                 Singleton = null;

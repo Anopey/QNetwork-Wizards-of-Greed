@@ -25,7 +25,7 @@ namespace Game.Networking
 
         private Action<Packet> packetRecieved;
 
-        private void Awake()
+        private void OnEnable()
         {
 #if UNITY_EDITOR
             if (Handlers.Length == 0) //no need to bug developer during development.

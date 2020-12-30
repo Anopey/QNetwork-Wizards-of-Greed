@@ -22,9 +22,9 @@ func initializePackets() *packet.PacketManager {
 }
 
 //region Writing Utils
+
 func (p *player) WriteMessage(message string) {
-	pac := packet.NewPacket(16)
-	pac.WriteString(message)
+	pac := packet.NewPacketWithStrings(16, []string{message})
 	p.clientInstance.writeChannel <- pac
 }
 
