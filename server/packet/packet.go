@@ -16,6 +16,24 @@ func NewPacket(ID uint16) *Packet {
 		ID:  ID,
 	}
 	p.WriteUInt16(ID)
+	p.WriteUInt16(GetPacketManager().GetPacketDataType(ID).MinimumByteLength)
+	return &p
+}
+
+func NewPacketWithStrings(ID uint16, strings []string) *Packet {
+	p := Packet{
+		buf: make([]byte, 0),
+		ID:  ID,
+	}
+	p.WriteUInt16(ID)
+	length := (GetPacketManager().GetPacketDataType(ID).MinimumByteLength)
+
+	for _, str := range strings {
+		length += uint16(len(str))
+	}
+
+	p.WriteUInt16(length)
+	p.writeStrings(strings)
 	return &p
 }
 
@@ -57,9 +75,7 @@ func (p *Packet) WriteByte(val byte) {
 }
 
 func (p *Packet) WriteBytes(vals []byte) {
-	for _, i := range vals {
-		p.buf = append(p.buf, i)
-	}
+	p.buf = append(p.buf, vals...)
 }
 
 func (p *Packet) WriteUInt16(val uint16) {
@@ -105,6 +121,13 @@ func (p *Packet) WriteBool(val bool) {
 		p.buf = append(p.buf, 1)
 	} else {
 		p.buf = append(p.buf, 0)
+	}
+}
+
+func (p *Packet) writeStrings(val []string) {
+	for _, str := range val {
+		p.WriteUInt16(uint16(len(str)))
+		p.buf = append(p.buf, str...)
 	}
 }
 
