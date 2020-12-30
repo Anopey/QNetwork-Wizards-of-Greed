@@ -77,11 +77,11 @@ func processInitialConnection(conn *net.Conn) {
 		return
 	}
 	startClientProcesses(p)
-	p.WriteMessage("Welcome!")
 }
 
 func startClientProcesses(p *player) {
 	go tendToClientChannels(p)
+	p.WriteMessage("Welcome!")
 	tendToClientRead(p)
 }
 

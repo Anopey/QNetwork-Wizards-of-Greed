@@ -137,7 +137,7 @@ namespace Game.Networking
                 }
             }
 
-            private ushort HandleData(byte[] _data)
+            private ushort HandleData(byte[] _data) //TODO: Optimize even further if needed!
             {
                 if(recievedData == null)
                 {
@@ -155,21 +155,23 @@ namespace Game.Networking
                     //    Debug.LogError("Ok so a packet and the start of another packet can get mixed up it seems. Readjust accordingly!");
                     
                     recievedData.Write(_data);
-
-                    if(recievedData.Length == recievedData.ExpectedLength)
-                    {
-                        //our packet is now complete!
-                        NetworkManager.ExecuteOnMainThread(() =>
-                        {
-                            recievedData.DataType.OnPacketRecieved(recievedData);
-                            recievedData = null;
-                        });
-                    }
-                    else
-                    {
-                        return (ushort)(recievedData.ExpectedLength - recievedData.Length);
-                    }
                 }
+
+
+                if (recievedData.Length == recievedData.ExpectedLength)
+                {
+                    //our packet is now complete!
+                    NetworkManager.ExecuteOnMainThread(() =>
+                    {
+                        recievedData.DataType.OnPacketRecieved(recievedData);
+                        recievedData = null;
+                    });
+                }
+                else
+                {
+                    return (ushort)(recievedData.ExpectedLength - recievedData.Length);
+                }
+
                 return dataBufferSize;
             }
         }

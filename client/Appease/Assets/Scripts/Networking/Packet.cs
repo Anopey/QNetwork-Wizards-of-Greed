@@ -74,12 +74,13 @@ namespace Game.Networking
         /// <summary>Creates a packet from which data can be read. Used for receiving. The passed byte array must at least contain the initial ID and length ushorts </summary>
         public Packet(byte[] _data)
         {
-            readWritePos = 4;
+            readWritePos = 0;
             ExpectedLength = BitConverter.ToUInt16(_data, 2);
             PacketBuffer = new byte[ExpectedLength];
             ID = BitConverter.ToUInt16(_data, 0);
             DataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(ID);
             Write(_data);
+            readWritePos = 0;
         }
 
         #region Functions
