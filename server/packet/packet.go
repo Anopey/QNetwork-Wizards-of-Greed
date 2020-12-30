@@ -108,13 +108,6 @@ func (p *Packet) WriteBool(val bool) {
 	}
 }
 
-func (p *Packet) WriteString(val string) {
-	p.WriteUInt16(uint16(len(val)))
-	for _, i := range []byte(val) {
-		p.buf = append(p.buf, i)
-	}
-}
-
 //endregion
 
 //region Reading

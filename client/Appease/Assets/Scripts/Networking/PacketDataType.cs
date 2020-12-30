@@ -21,8 +21,6 @@ namespace Game.Networking
 
         private ushort calculatedMinimumTotalByteLength = ushort.MaxValue;
 
-        private ushort stringPrimitiveCount;
-
         private ushort lengthToTellRealLength;
 
         private Action<Packet> packetRecieved;
@@ -41,7 +39,7 @@ namespace Game.Networking
             }
 #endif
             CalculateMinimumByteLength();
-            CalculateStringPrimitive();
+            VerifyStringPrimitivePositions();
             VerifyPrepareHandlers();
         }
 
@@ -111,36 +109,33 @@ namespace Game.Networking
             }
         }
 
-        private void CalculateStringPrimitive()
+        private void VerifyStringPrimitivePositions()
         {
-            stringPrimitiveCount = 0;
-            ushort expected = 0;
-            for(ushort i = 0; i < Primitives.Length; i++)
+            bool flag = false;
+            for (ushort i = 0; i < Primitives.Length; i++)
             {
-                if(Primitives[i] == TypeCode.String)
+                if (Primitives[i] == TypeCode.String && flag)
                 {
-                    stringPrimitiveCount++;
-                    if(i != expected)
-                    {
-                        Debug.LogError("The packet specification of ID " + ID.ToString() + " has a string primtive that is not at the start or right after another string!");
-                    }
-                    expected++;
+                    Debug.LogError("The packet specification of ID " + ID.ToString() + " has a string primtive that is not at the start or right after another string!");
+                }
+                else
+                {
+                    flag = true;
                 }
             }
-
         }
 
         private void VerifyPrepareHandlers()
         {
-            foreach(var handler in Handlers)
+            foreach (var handler in Handlers)
             {
                 //if(handler.ExpectedPrimitives.Length != Primitives.Length)
                 //{
                 //    Debug.LogError("Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
                 //}
-                for(int i = 0; i < handler.ExpectedPrimitives.Length; i++)
+                for (int i = 0; i < handler.ExpectedPrimitives.Length; i++)
                 {
-                    if(handler.ExpectedPrimitives[i] != Primitives[i])
+                    if (handler.ExpectedPrimitives[i] != Primitives[i])
                     {
                         Debug.LogError("Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
                     }
@@ -154,11 +149,6 @@ namespace Game.Networking
         /// This is called minimum since a string can be indefinitely long.
         /// </summary>
         public ushort MinimumByteLength { get { return calculatedMinimumTotalByteLength; } }
-
-        /// <summary>
-        /// All Strings should be at the start of the packet, their counts written first, all after ID.
-        /// </summary>
-        public ushort StringPrimitveCount { get { return stringPrimitiveCount; } }
 
         public void OnPacketRecieved(Packet p)
         {
