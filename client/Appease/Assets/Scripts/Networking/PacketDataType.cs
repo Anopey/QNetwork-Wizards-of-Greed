@@ -50,12 +50,6 @@ namespace Game.Networking
             {
                 switch (t)
                 {
-                    case TypeCode.Object:
-                        calculatedMinimumTotalByteLength += 4;
-                        break;
-                    case TypeCode.DBNull:
-                        calculatedMinimumTotalByteLength += 4;
-                        break;
                     case TypeCode.Boolean:
                         calculatedMinimumTotalByteLength += 1;
                         break;
@@ -92,17 +86,11 @@ namespace Game.Networking
                     case TypeCode.Double:
                         calculatedMinimumTotalByteLength += 8;
                         break;
-                    case TypeCode.Decimal:
-                        calculatedMinimumTotalByteLength += 16;
-                        break;
-                    case TypeCode.DateTime:
-                        calculatedMinimumTotalByteLength += 8;
-                        break;
                     case TypeCode.String:
                         calculatedMinimumTotalByteLength += 2;
                         break;
                     default:
-                        Debug.LogError("Unexpected type code during packet data type length calculation");
+                        Debug.LogError("Unhandled type code " + t.ToString() + " during packet data type length calculation");
                         break;
                 }
 
