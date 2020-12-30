@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: NetworkManager
   m_EditorClassIdentifier: 
   packetManagerArgs:
-    handledTypes: []
+    handledTypes:
+    - {fileID: 11400000, guid: e7f936f7791ad7f4bb5d4052feb7f2a4, type: 2}

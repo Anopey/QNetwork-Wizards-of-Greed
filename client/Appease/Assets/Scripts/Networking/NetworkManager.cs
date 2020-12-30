@@ -20,11 +20,13 @@ namespace Game.Networking
 
         private void OnEnable()
         {
+            Debug.Log("Initializing NetworkManager");
             if(Singleton != null)
             {
                 Debug.LogError("Two instances of NetworkManager cannot exist!");
                 return;
             }
+            Debug.Log("NetworkManager Initialized.");
             Singleton = this;
             Initialize();
         }
@@ -47,11 +49,6 @@ namespace Game.Networking
         private static readonly List<Action> executeOnMainThread = new List<Action>();
         private static readonly List<Action> executeCopiedOnMainThread = new List<Action>();
         private static bool actionToExecuteOnMainThread = false;
-
-        private void Update()
-        {
-            UpdateMain();
-        }
 
         /// <summary>Sets an action to be executed on the main thread.</summary>
         /// <param name="_action">The action to be executed on the main thread.</param>
