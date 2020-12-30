@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using QUnity.Utility;
 
 namespace Game.Networking
 {
@@ -42,6 +43,7 @@ namespace Game.Networking
         private void Initialize()
         {
             PacketManager = new PacketManager(packetManagerArgs);
+            QEvents.RegisterUpdateAction(UpdateMain);
         }
 
         #region Thread Management
