@@ -9,7 +9,7 @@ namespace Game.Networking
     interface IDynamicPacketHandler
     {
         /// <summary>
-        /// Returns true if can handle this input and has been initialized. Returns false otherwise.
+        /// Returns the handler if can handle this input and has been initialized. Returns false otherwise.
         /// </summary>
         /// <param name="inputTypes"></param>
         /// <returns></returns>
