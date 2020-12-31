@@ -117,17 +117,27 @@ namespace Game.Networking
         {
             foreach (var handler in Handlers)
             {
-                //if(handler.ExpectedPrimitives.Length != Primitives.Length)
-                //{
-                //    Debug.LogError("Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
-                //}
-                for (int i = 0; i < handler.ExpectedPrimitives.Length; i++)
+                if(handler is IStaticPacketHandler stat)
                 {
-                    if (handler.ExpectedPrimitives[i] != Primitives[i])
+                    for (int i = 0; i < stat.ExpectedPrimitives.Length; i++)
                     {
-                        Debug.LogError("Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
+                        if (stat.ExpectedPrimitives[i] != Primitives[i])
+                        {
+                            Debug.LogError("Static Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
+                        }
+                    }
+                }else if(handler is IDynamicPacketHandler dyn)
+                {
+                    if (!dyn.VerifyInitializePacket(Primitives))
+                    {
+                        Debug.LogError("Dynamic Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
                     }
                 }
+                else
+                {
+                    Debug.LogError("A packet handler must implement one of the packet handler interfaces!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
+                }
+
 
                 packetRecieved += handler.OnPacketRecieved;
             }

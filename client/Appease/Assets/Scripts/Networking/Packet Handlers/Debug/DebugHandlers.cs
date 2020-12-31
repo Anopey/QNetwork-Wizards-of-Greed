@@ -8,11 +8,11 @@ namespace Game.Debugging
     using System;
 
     [CreateAssetMenu(fileName = "DebugFirstString", menuName = "Networking/PacketHandlers/DebugFirstString", order = 1)]
-    public class DebugHandlers : PacketHandler
+    public class DebugHandlers : PacketHandler, IStaticPacketHandler
     {
         private TypeCode[] expected = new TypeCode[] { TypeCode.String};
 
-        public override TypeCode[] ExpectedPrimitives { get { return expected; } }
+        public TypeCode[] ExpectedPrimitives { get { return expected; } }
 
         protected override void ProcessPacket(Packet packet)
         {

@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Game.Networking
+{
+    interface IDynamicPacketHandler
+    {
+        /// <summary>
+        /// Returns true if can handle this input and has been initialized. Returns false otherwise.
+        /// </summary>
+        /// <param name="inputTypes"></param>
+        /// <returns></returns>
+        bool VerifyInitializePacket(TypeCode[] inputTypes);
+
+    }
+}

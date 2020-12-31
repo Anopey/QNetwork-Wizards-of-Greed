@@ -9,8 +9,6 @@ namespace Game.Networking
     public abstract class PacketHandler : ScriptableObject
     {
 
-        public abstract TypeCode[] ExpectedPrimitives { get; }
-
         public void OnPacketRecieved(Packet packet)
         {
             ProcessPacket(packet);
