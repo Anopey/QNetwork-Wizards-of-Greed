@@ -80,7 +80,7 @@ namespace Game.Networking
             ID = BitConverter.ToUInt16(_data, 0);
             DataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(ID);
             Write(_data);
-            readWritePos = 0;
+            readWritePos = 4;
         }
 
         #region Functions
