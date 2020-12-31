@@ -20,7 +20,7 @@ namespace Game.UI
 
         #region Singleton Architecture
 
-        private void Awake()
+        private void Start()
         {
             if (Singleton != null)
             {
