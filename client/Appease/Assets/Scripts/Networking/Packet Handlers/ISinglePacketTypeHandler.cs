@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game.Networking
 {
-    interface IStaticPacketHandler
+    interface ISinglePacketTypeHandler
     {
 
         TypeCode[] ExpectedPrimitives { get; }

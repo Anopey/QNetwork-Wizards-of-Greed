@@ -8,7 +8,7 @@ namespace Game.Debugging
     using System;
 
     [CreateAssetMenu(fileName = "DebugFirstString", menuName = "Networking/PacketHandlers/DebugFirstString", order = 1)]
-    public class DebugHandlers : PacketHandler, IDynamicPacketHandler
+    public class DebugHandlers : PacketHandler, IMultiplePacketTypeHandler
     {
         private class DebugHandler
         {

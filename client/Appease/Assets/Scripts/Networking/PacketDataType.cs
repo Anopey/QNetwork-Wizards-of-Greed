@@ -120,7 +120,7 @@ namespace Game.Networking
 
         private void VerifyPrepareHandler(PacketHandler handler)
         {
-            if (handler is IStaticPacketHandler stat)
+            if (handler is ISinglePacketTypeHandler stat)
             {
                 for (int i = 0; i < stat.ExpectedPrimitives.Length; i++)
                 {
@@ -131,7 +131,7 @@ namespace Game.Networking
                 }
                 packetRecieved += stat.ProcessPacket;
             }
-            else if (handler is IDynamicPacketHandler dyn)
+            else if (handler is IMultiplePacketTypeHandler dyn)
             {
                 var callback = dyn.VerifyInitializePacket(Primitives);
                 if (callback == null)

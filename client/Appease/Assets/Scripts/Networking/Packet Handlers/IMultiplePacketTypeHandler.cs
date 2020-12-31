@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game.Networking
 {
-    interface IDynamicPacketHandler
+    interface IMultiplePacketTypeHandler
     {
         /// <summary>
         /// Returns the handler if can handle this input and has been initialized. Returns false otherwise.
