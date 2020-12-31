@@ -22,8 +22,11 @@ namespace Game.Debugging
         protected override void ProcessPacket(Packet packet)
         {
             string msg = "Server sent: ";
-            
-            Debug.Log("Server sent: " + packet.ReadString());
+            for(int i = 0; i < expected.Length; i++)
+            {
+                msg += packet.ReadAsString(expected[i]);
+            }
+            Debug.Log(msg);
         }
     }
 
