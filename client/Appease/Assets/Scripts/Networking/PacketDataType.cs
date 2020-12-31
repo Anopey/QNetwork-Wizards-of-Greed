@@ -129,7 +129,7 @@ namespace Game.Networking
                         Debug.LogError("Static Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
                     }
                 }
-                packetRecieved += handler.OnPacketRecieved;
+                packetRecieved += stat.ProcessPacket;
             }
             else if (handler is IDynamicPacketHandler dyn)
             {

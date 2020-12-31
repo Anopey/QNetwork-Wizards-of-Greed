@@ -11,5 +11,7 @@ namespace Game.Networking
 
         TypeCode[] ExpectedPrimitives { get; }
 
+        void ProcessPacket(Packet p);
+
     }
 }

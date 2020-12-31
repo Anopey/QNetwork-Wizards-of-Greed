@@ -10,23 +10,29 @@ namespace Game.Debugging
     [CreateAssetMenu(fileName = "DebugFirstString", menuName = "Networking/PacketHandlers/DebugFirstString", order = 1)]
     public class DebugHandlers : PacketHandler, IDynamicPacketHandler
     {
-        private TypeCode[] expected;
-
-
-        public bool VerifyInitializePacket(TypeCode[] inputTypes)
+        private class DebugHandler
         {
-            expected = inputTypes;
-            return true;
+            private TypeCode[] expected;
+
+            public DebugHandler(TypeCode[] expected)
+            {
+                this.expected = expected;
+            }
+            public void ProcessPacket(Packet packet)
+            {
+                string msg = "Server sent: ";
+                for (int i = 0; i < expected.Length; i++)
+                {
+                    msg += packet.ReadAsString(expected[i]);
+                }
+                Debug.Log(msg);
+            }
         }
 
-        protected override void ProcessPacket(Packet packet)
+        public Action<Packet> VerifyInitializePacket(TypeCode[] inputTypes)
         {
-            string msg = "Server sent: ";
-            for(int i = 0; i < expected.Length; i++)
-            {
-                msg += packet.ReadAsString(expected[i]);
-            }
-            Debug.Log(msg);
+            DebugHandler inst = new DebugHandler(inputTypes);
+            return inst.ProcessPacket;
         }
     }
 
