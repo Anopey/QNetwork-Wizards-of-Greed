@@ -15,7 +15,7 @@ namespace Game.Networking
         public ushort ID;
 
         [SerializeField]
-        private PacketHandler[] Handlers;
+        private List<PacketHandler> Handlers;
 
         public TypeCode[] Primitives;
 
@@ -27,21 +27,12 @@ namespace Game.Networking
 
         private void OnEnable()
         {
-#if UNITY_EDITOR
-            if (Handlers.Length == 0) //no need to bug developer during development.
-            {
-                return;
-            }
-#else
-            if (Handlers.Length == 0)
-            {
-                Debug.LogError("Packet data type with ID " + ID.ToString() + " has no handlers assigned!");
-            }
-#endif
             CalculateMinimumByteLength();
             VerifyStringPrimitivePositions();
             VerifyPrepareHandlers();
         }
+
+        #region Initialization
 
         private void CalculateMinimumByteLength()
         {
@@ -117,33 +108,50 @@ namespace Game.Networking
         {
             foreach (var handler in Handlers)
             {
-                if(handler is IStaticPacketHandler stat)
-                {
-                    for (int i = 0; i < stat.ExpectedPrimitives.Length; i++)
-                    {
-                        if (stat.ExpectedPrimitives[i] != Primitives[i])
-                        {
-                            Debug.LogError("Static Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
-                        }
-                    }
-                    packetRecieved += handler.OnPacketRecieved;
-                }
-                else if(handler is IDynamicPacketHandler dyn)
-                {
-                    var callback = dyn.VerifyInitializePacket(Primitives);
-                    if (callback == null)
-                    {
-                        Debug.LogError("Dynamic Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
-                    }
-                    packetRecieved += callback;
-                }
-                else
-                {
-                    Debug.LogError("A packet handler must implement one of the packet handler interfaces!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
-                }
+
+                VerifyPrepareHandler(handler);
 
             }
         }
+
+        #endregion
+
+        #region Handler Management and Registration
+
+        private void VerifyPrepareHandler(PacketHandler handler)
+        {
+            if (handler is IStaticPacketHandler stat)
+            {
+                for (int i = 0; i < stat.ExpectedPrimitives.Length; i++)
+                {
+                    if (stat.ExpectedPrimitives[i] != Primitives[i])
+                    {
+                        Debug.LogError("Static Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
+                    }
+                }
+                packetRecieved += handler.OnPacketRecieved;
+            }
+            else if (handler is IDynamicPacketHandler dyn)
+            {
+                var callback = dyn.VerifyInitializePacket(Primitives);
+                if (callback == null)
+                {
+                    Debug.LogError("Dynamic Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
+                }
+                packetRecieved += callback;
+            }
+            else
+            {
+                Debug.LogError("A packet handler must implement one of the packet handler interfaces!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
+            }
+        }
+
+        public void RegisterHandler(PacketHandler handler)
+        {
+            VerifyPrepareHandler(handler);
+        }
+
+        #endregion
 
         /// <summary>
         /// This is called minimum since a string can be indefinitely long.
