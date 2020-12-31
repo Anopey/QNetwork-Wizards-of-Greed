@@ -13,7 +13,7 @@ namespace Game.Networking
         /// </summary>
         /// <param name="inputTypes"></param>
         /// <returns></returns>
-        bool VerifyInitializePacket(TypeCode[] inputTypes);
+        Action<Packet> VerifyInitializePacket(TypeCode[] inputTypes);
 
     }
 }

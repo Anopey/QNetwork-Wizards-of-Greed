@@ -126,20 +126,22 @@ namespace Game.Networking
                             Debug.LogError("Static Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
                         }
                     }
-                }else if(handler is IDynamicPacketHandler dyn)
+                    packetRecieved += handler.OnPacketRecieved;
+                }
+                else if(handler is IDynamicPacketHandler dyn)
                 {
-                    if (!dyn.VerifyInitializePacket(Primitives))
+                    var callback = dyn.VerifyInitializePacket(Primitives);
+                    if (callback == null)
                     {
                         Debug.LogError("Dynamic Packet Data Type and Handler Mismatch!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
                     }
+                    packetRecieved += callback;
                 }
                 else
                 {
                     Debug.LogError("A packet handler must implement one of the packet handler interfaces!\n Data Type: \n" + this.ToString() + " \n Handler:\n" + handler.ToString());
                 }
 
-
-                packetRecieved += handler.OnPacketRecieved;
             }
         }
 
