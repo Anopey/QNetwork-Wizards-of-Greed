@@ -16,7 +16,7 @@ namespace Game.Debugging
 
         protected override void ProcessPacket(Packet packet)
         {
-            Debug.Log(packet.ReadString());
+            Debug.Log("Server sent: " + packet.ReadString());
         }
     }
 
