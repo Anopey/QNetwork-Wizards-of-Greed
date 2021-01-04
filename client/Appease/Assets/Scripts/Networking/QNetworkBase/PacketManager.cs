@@ -30,6 +30,11 @@ namespace Game.QNetwork
         {
             return idToPacketDataType[ID];
         }
+
+        public bool IDIsValid(ushort ID)
+        {
+            return idToPacketDataType.ContainsKey(ID);
+        }
     }
 
     [Serializable]

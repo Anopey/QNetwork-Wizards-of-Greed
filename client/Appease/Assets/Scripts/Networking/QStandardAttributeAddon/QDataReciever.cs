@@ -7,12 +7,12 @@ namespace Game.QNetwork.QStandardAttributeInfo
 {
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public class DataReciever : Attribute
+    public class QDataReciever : Attribute
     {
         public ushort PacketID { get; private set; }
         public string Description { get; private set; }
 
-        public DataReciever(ushort packetID, string desc = "")
+        public QDataReciever(ushort packetID, string desc = "")
         {
             PacketID = packetID;
             Description = desc;
