@@ -10,7 +10,7 @@ namespace Game.QNetwork.QStandardAttributeInfo
     using QNetwork;
     using UnityEngine;
 
-    [CreateAssetMenu(fileName = "DebugFirstString", menuName = "Networking/DefaultPacketHandlers/DebugFirstString", order = 1)]
+    [CreateAssetMenu(fileName = "Standard Attribute Addon", menuName = "QNetwork/Addons/StandardAttributeAddon", order = 1)]
     public class QStandardAttributeAddon : QAddon
     {
         protected override void OnNetworkManagerInitialized()
