@@ -13,4 +13,13 @@ public class CardInventory
         cards.Add(new UpgradeCard(2, true));
     }
 
+    public bool BuyContract(SpiceInventory spiceInventory, ContractInventory contractInventory, Contract contract)
+    {
+        if (!contract.BuyContract(spiceInventory)) return false;
+
+        contractInventory.contracts.Add(contract);
+
+        return true;
+    }
+
 }
