@@ -8,8 +8,7 @@ using System;
 namespace Game.Networking
 {
 
-    [CreateAssetMenu(fileName = "Client", menuName = "Networking/Base/Client", order = 1)]
-    public class Client : ScriptableObject
+    public class Client
     {
 
         public static readonly ushort dataBufferSize = 4096;
@@ -28,27 +27,24 @@ namespace Game.Networking
 
         #region Singleton Architecture
 
-        public static Client Singleton { get; private set; }
+        private static Client _singleton;
 
-        private void OnEnable()
+        public static Client Singleton
         {
-            Debug.Log("Client initializing...");
-            if (Singleton != null)
+            get
             {
-                Destroy(this);
-                return;
+                if(_singleton == null)
+                {
+                    Singleton = new Client();
+                    Singleton._tcp = new TCP();
+                }
+                return _singleton;
             }
-            Debug.Log("Client initialized.");
-            Singleton = this;
-            _tcp = new TCP();
+            private set
+            {
+                _singleton = value;
+            }
         }
-
-        private void OnDisable()
-        {
-            if (Singleton == this)
-                Singleton = null;
-        }
-
 
         #endregion
 
@@ -90,7 +86,7 @@ namespace Game.Networking
                 {
                     stream.BeginWrite(packet.PacketBuffer, 0, packet.Length, null, null);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.LogError("Error during writing to server: \n" + e.Message);
                 }
@@ -137,9 +133,9 @@ namespace Game.Networking
                 }
             }
 
-            private ushort HandleData(byte[] _data)
+            private ushort HandleData(byte[] _data) //TODO: Optimize even further if needed!
             {
-                if(recievedData == null)
+                if (recievedData == null)
                 {
                     //Start reading a new packet.
                     if (_data.Length < 4)
@@ -153,23 +149,25 @@ namespace Game.Networking
 
                     //if (recievedData.ExpectedLength < recievedData.Length + _data.Length)
                     //    Debug.LogError("Ok so a packet and the start of another packet can get mixed up it seems. Readjust accordingly!");
-                    
-                    recievedData.Write(_data);
 
-                    if(recievedData.Length == recievedData.ExpectedLength)
-                    {
-                        //our packet is now complete!
-                        NetworkManager.ExecuteOnMainThread(() =>
-                        {
-                            recievedData.DataType.OnPacketRecieved(recievedData);
-                            recievedData = null;
-                        });
-                    }
-                    else
-                    {
-                        return (ushort)(recievedData.ExpectedLength - recievedData.Length);
-                    }
+                    recievedData.Write(_data);
                 }
+
+
+                if (recievedData.Length == recievedData.ExpectedLength)
+                {
+                    //our packet is now complete!
+                    NetworkManager.ExecuteOnMainThread(() =>
+                    {
+                        recievedData.DataType.OnPacketRecieved(recievedData);
+                        recievedData = null;
+                    });
+                }
+                else
+                {
+                    return (ushort)(recievedData.ExpectedLength - recievedData.Length);
+                }
+
                 return dataBufferSize;
             }
         }

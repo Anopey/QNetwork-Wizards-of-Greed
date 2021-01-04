@@ -74,12 +74,13 @@ namespace Game.Networking
         /// <summary>Creates a packet from which data can be read. Used for receiving. The passed byte array must at least contain the initial ID and length ushorts </summary>
         public Packet(byte[] _data)
         {
-            readWritePos = 4;
+            readWritePos = 0;
             ExpectedLength = BitConverter.ToUInt16(_data, 2);
             PacketBuffer = new byte[ExpectedLength];
             ID = BitConverter.ToUInt16(_data, 0);
             DataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(ID);
             Write(_data);
+            readWritePos = 4;
         }
 
         #region Functions
@@ -281,6 +282,73 @@ namespace Game.Networking
             readWritePos += _length;
             return _value;
         }
+
+        #region Other Read Utilities
+
+        /// <summary>
+        /// Do remember that boxing and unboxing is not very efficient. This Read function should be used sparingly, if at all.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public object Read(TypeCode t)
+        {
+            switch (t)
+            {
+                case TypeCode.String:
+                    return ReadString();
+                case TypeCode.Boolean:
+                    return ReadBool();
+                case TypeCode.Double:
+                    return ReadDouble();
+                case TypeCode.Single:
+                    return ReadFloat();
+                case TypeCode.Int64:
+                    return ReadLong();
+                case TypeCode.Int32:
+                    return ReadInt();
+                case TypeCode.Int16:
+                    return ReadShort();
+                case TypeCode.UInt16:
+                    return ReadShort();
+                case TypeCode.Byte:
+                    return ReadByte();
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Reads the desired type and returns it using ToString(). A switch statement is used so this is not as fast.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public string ReadAsString(TypeCode t)
+        {
+            switch (t)
+            {
+                case TypeCode.String:
+                    return ReadString();
+                case TypeCode.Boolean:
+                    return ReadBool().ToString();
+                case TypeCode.Double:
+                    return ReadDouble().ToString();
+                case TypeCode.Single:
+                    return ReadFloat().ToString();
+                case TypeCode.Int64:
+                    return ReadLong().ToString();
+                case TypeCode.Int32:
+                    return ReadInt().ToString();
+                case TypeCode.Int16:
+                    return ReadShort().ToString();
+                case TypeCode.UInt16:
+                    return ReadShort().ToString();
+                case TypeCode.Byte:
+                    return ReadByte().ToString();
+            }
+            return null;
+        }
+
+        #endregion
+
         #endregion
 
         private bool disposed = false;

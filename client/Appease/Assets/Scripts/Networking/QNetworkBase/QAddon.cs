@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Game.Networking
 {
-    class PacketSpecificationManager
+    public abstract class QAddon
     {
+
+
 
     }
 }
