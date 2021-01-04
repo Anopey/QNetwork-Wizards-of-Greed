@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Game.QNetwork.QStandardAttributeInfo
+namespace Game.Networking
 {
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]

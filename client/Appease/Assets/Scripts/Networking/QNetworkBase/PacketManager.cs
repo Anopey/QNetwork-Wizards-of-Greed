@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Game.QNetwork
+namespace Game.Networking
 {
     public class PacketManager
     {

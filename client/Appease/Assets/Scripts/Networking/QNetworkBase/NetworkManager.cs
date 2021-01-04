@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using QUnity.Utility;
-using System.Reflection;
 
-namespace Game.QNetwork
+namespace Game.Networking
 {
 
     public class NetworkManager : MonoBehaviour
@@ -17,8 +16,6 @@ namespace Game.QNetwork
         private PacketManagerArgs packetManagerArgs;
 
         public PacketManager PacketManager { get; private set; }
-
-        public static event Action AddonInitializationEvent; //dont want addons to be monobehaviours too to not clutter up scene so doing it like this.
 
         #region Singleton Architecture
 
@@ -34,7 +31,6 @@ namespace Game.QNetwork
             Singleton = this;
             DontDestroyOnLoad(this);
             Initialize();
-            InitializeAddons();
         }
 
         private void OnDestroy()
@@ -48,11 +44,6 @@ namespace Game.QNetwork
         private void Initialize()
         {
             PacketManager = new PacketManager(packetManagerArgs);
-        }
-
-        private void InitializeAddons()
-        {
-            AddonInitializationEvent?.Invoke();
         }
 
         #region Thread Management

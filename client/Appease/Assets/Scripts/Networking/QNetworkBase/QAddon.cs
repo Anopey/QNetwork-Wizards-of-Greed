@@ -4,17 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using UnityEngine;
-
-namespace Game.QNetwork
+namespace Game.Networking
 {
-    public abstract class QAddon: ScriptableObject
+    public abstract class QAddon
     {
-        private void OnEnable()
-        {
-            NetworkManager.AddonInitializationEvent += OnNetworkManagerInitialized;
-        }
 
-        protected abstract void OnNetworkManagerInitialized();
+
+
     }
 }
