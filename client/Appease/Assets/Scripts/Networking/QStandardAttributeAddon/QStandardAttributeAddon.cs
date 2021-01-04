@@ -46,7 +46,22 @@ namespace Game.QNetwork.QStandardAttributeInfo
                     continue;
                 }
 
-                
+                var packetPrimitives = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(id).Primitives;
+
+                if(packetPrimitives.Length != primitives.Length)
+                {
+                    Debug.LogError(candidate.Name + " does not accept the same primitives as the packet type specified by its ID!");
+                    continue;
+                }
+
+                for(int i = 0; i < packetPrimitives.Length; i++)
+                {
+                    if(packetPrimitives[i] != Type.GetTypeCode(primitives[i]))
+                    {
+                        Debug.LogError(candidate.Name + " does not accept the same primitives as the packet type specified by its ID!");
+                        continue;
+                    }
+                }
             }
         }
     }
