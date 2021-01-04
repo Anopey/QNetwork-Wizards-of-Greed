@@ -14,6 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Description: Simple Message
   ID: 16
-  Handlers:
-  - {fileID: 11400000, guid: 46573906044328c46b4fdc7d2a1d8acf, type: 2}
+  Handlers: []
   Primitives: 12000000
