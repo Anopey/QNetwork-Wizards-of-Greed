@@ -19,4 +19,17 @@ public class Card
         this.t4Spice = t4Spice;
         this.usable = usable;
     }
+
+    public bool ConsumeCard(int multiplier, SpiceInventory spiceInventory)
+    {
+        if (!usable && spiceInventory.t1SpiceCount > -t1Spice*multiplier 
+            && spiceInventory.t2SpiceCount > -t2Spice*multiplier 
+            && spiceInventory.t3SpiceCount > -t3Spice*multiplier
+            && spiceInventory.t4SpiceCount > -t4Spice*multiplier) return false;
+
+        usable = false;
+        spiceInventory.ModifySpices(t1Spice * multiplier, t2Spice * multiplier, t3Spice * multiplier, t4Spice * multiplier);
+        return true;
+
+    }
 }
