@@ -4,9 +4,9 @@ using UnityEngine;
 using System;
 using UnityEngine.Events;
 
-namespace Game.Networking
+namespace Game.QNetwork
 {
-    [CreateAssetMenu(fileName = "PacketDataType", menuName = "Networking/PacketDataType", order = 1)]
+    [CreateAssetMenu(fileName = "PacketDataType", menuName = "QNetwork/PacketDataType", order = 1)]
     public class PacketDataType : ScriptableObject
     {
 

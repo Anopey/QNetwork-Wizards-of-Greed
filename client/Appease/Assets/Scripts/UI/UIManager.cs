@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Game.UI
 {
 
-    using Networking;
+    using QNetwork;
 
     public class UIManager : MonoBehaviour
     {
