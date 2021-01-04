@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Linq.Expressions;
 
-namespace Game.QNetwork.QStandardAttributeInfo
+namespace Game.QNetwork.StandardAttributeAddon
 {
 
     using QNetwork;
