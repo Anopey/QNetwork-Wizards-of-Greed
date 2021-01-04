@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System;
 
-namespace Game.Networking
+namespace Game.QNetwork
 {
 
     public class Client

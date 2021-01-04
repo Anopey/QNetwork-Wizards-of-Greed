@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Networking
+namespace Game.QNetwork
 {
 
     //TODO consider getting rid of movereadpos optional bool
@@ -83,7 +83,7 @@ namespace Game.Networking
             readWritePos = 4;
         }
 
-        #region Functions
+        #region Utility Functions
 
         public ushort Length { get { return (ushort)PacketBuffer.Length;} }
 
