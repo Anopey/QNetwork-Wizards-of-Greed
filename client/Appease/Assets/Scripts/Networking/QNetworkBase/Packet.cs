@@ -83,7 +83,7 @@ namespace Game.Networking
             readWritePos = 4;
         }
 
-        #region Functions
+        #region Utility Functions
 
         public ushort Length { get { return (ushort)PacketBuffer.Length;} }
 
