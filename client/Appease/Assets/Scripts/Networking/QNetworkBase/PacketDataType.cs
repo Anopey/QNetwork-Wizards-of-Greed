@@ -151,6 +151,11 @@ namespace Game.QNetwork
             VerifyPrepareHandler(handler);
         }
 
+        public void RegisterHandler(Action<Packet> act)
+        {
+            packetRecieved += act;
+        }
+
         #endregion
 
         /// <summary>

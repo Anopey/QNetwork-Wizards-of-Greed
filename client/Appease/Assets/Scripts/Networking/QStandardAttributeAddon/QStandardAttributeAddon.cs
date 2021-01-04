@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Linq.Expressions;
 
 namespace Game.QNetwork.QStandardAttributeInfo
 {
@@ -46,7 +47,9 @@ namespace Game.QNetwork.QStandardAttributeInfo
                     continue;
                 }
 
-                var packetPrimitives = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(id).Primitives;
+                var packetDataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(id);
+
+                var packetPrimitives = packetDataType.Primitives;
 
                 if(packetPrimitives.Length != primitives.Length)
                 {
@@ -62,6 +65,21 @@ namespace Game.QNetwork.QStandardAttributeInfo
                         continue;
                     }
                 }
+
+                //now we may zubzcrayb
+
+                ParameterExpression packetExpression = ParameterExpression.Parameter(typeof(Packet));
+
+                List<Expression> expressions = new List<Expression>();
+
+                foreach(var prim in packetPrimitives)
+                {
+                    expressions.Add(Packet.GetReaderExpression(prim, packetExpression));
+                }
+
+                var handler = Expression.Lambda<Action<Packet>>(Expression.Call(candidate, expressions), packetExpression).Compile();
+
+                packetDataType.RegisterHandler(handler);
             }
         }
     }
