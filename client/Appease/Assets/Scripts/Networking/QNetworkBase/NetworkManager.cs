@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using QUnity.Utility;
 
 namespace Game.Networking
 {
-    [CreateAssetMenu(fileName = "NetworkManager", menuName = "Networking/Base/NetworkManager", order = 1)]
-    public class NetworkManager : ScriptableObject
+
+    public class NetworkManager : MonoBehaviour
     {
 
         public static NetworkManager Singleton { get; private set; }
@@ -18,7 +19,7 @@ namespace Game.Networking
 
         #region Singleton Architecture
 
-        private void OnEnable()
+        private void Start()
         {
             Debug.Log("Initializing NetworkManager");
             if(Singleton != null)
@@ -28,10 +29,11 @@ namespace Game.Networking
             }
             Debug.Log("NetworkManager Initialized.");
             Singleton = this;
+            DontDestroyOnLoad(this);
             Initialize();
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             if (Singleton == this)
                 Singleton = null;
@@ -68,7 +70,7 @@ namespace Game.Networking
         }
 
         /// <summary>Executes all code meant to run on the main thread. NOTE: Call this ONLY from the main thread.</summary>
-        private static void UpdateMain()
+        private void Update()
         {
             if (actionToExecuteOnMainThread)
             {
