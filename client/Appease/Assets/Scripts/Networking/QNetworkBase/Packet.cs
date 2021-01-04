@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Networking
+namespace Game.QNetwork
 {
 
     //TODO consider getting rid of movereadpos optional bool
