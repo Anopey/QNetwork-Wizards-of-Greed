@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Game.Debugging
 {
-    using Networking;
+    using QNetwork;
     using System;
 
-    [CreateAssetMenu(fileName = "DebugFirstString", menuName = "Networking/DefaultPacketHandlers/DebugFirstString", order = 1)]
+    [CreateAssetMenu(fileName = "DebugFirstString", menuName = "QNetwork/DefaultPacketHandlers/DebugFirstString", order = 1)]
     public class DebugHandlers : PacketHandler, IMultiplePacketTypeHandler
     {
         private class DebugHandler
