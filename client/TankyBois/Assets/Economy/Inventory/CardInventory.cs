@@ -9,7 +9,7 @@ public class CardInventory
 
     public CardInventory()
     {
-        cards.Add(new Card(2, 0, 0, 0, true));
+        cards.Add(new IncomeCard(2, 0, 0, 0, true));
         cards.Add(new UpgradeCard(2, true));
     }
 

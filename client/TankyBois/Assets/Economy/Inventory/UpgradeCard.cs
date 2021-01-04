@@ -14,4 +14,14 @@ public class UpgradeCard : Card
         this.usable = usable;
     }
 
+    public bool ConsumeCard(SpiceInventory spiceInventory)
+    {
+        if (!usable) return false;
+
+        //IMPLEMENT
+
+        usable = false;
+        return true;
+    }
+
 }
