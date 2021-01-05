@@ -4,22 +4,34 @@ using UnityEngine;
 
 public class CardInventory
 {
-    
-    List<Card> cards = new List<Card>();
+
+    public List<Card> cards
+    { 
+        get;
+        private set;
+    }
 
     public CardInventory()
     {
-        cards.Add(new IncomeCard(2, 0, 0, 0, true));
+        cards = new List<Card>();
+        cards.Add(new IncomeCard(2, 0, 3, 0, true));
         cards.Add(new UpgradeCard(2, true));
+        cards.Add(new TradeCard(0, 2, -2, 1, true));
+        cards.Add(new TradeCard(3, 1, 0, -1, true));
     }
 
-    public bool BuyContract(SpiceInventory spiceInventory, ContractInventory contractInventory, Contract contract)
+    public void AddCard(Card card)
     {
-        if (!contract.BuyContract(spiceInventory)) return false;
+        cards.Add(card);
+        
+    }
 
-        contractInventory.contracts.Add(contract);
-
-        return true;
+    public void PickupCards()
+    {
+        foreach (Card card in cards)
+        {
+            card.usable = true;
+        }
     }
 
 }

@@ -5,8 +5,11 @@ using UnityEngine;
 public class UpgradeCard : Card
 {
 
-    int upgradeCount;
-    bool usable;
+    public int upgradeCount
+    {
+        get;
+        private set;
+    }
 
     public UpgradeCard(int upgradeCount = 0, bool usable = true)
     {
@@ -14,7 +17,7 @@ public class UpgradeCard : Card
         this.usable = usable;
     }
 
-    public bool ConsumeCard(SpiceInventory spiceInventory)
+    public override bool ConsumeCard(SpiceInventory spiceInventory, int multiplier = 1)
     {
         if (!usable) return false;
 

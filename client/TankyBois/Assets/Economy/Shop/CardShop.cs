@@ -16,12 +16,14 @@ public class CardShop
         cards.Add(new TradeCard(3, -2, 1));
     }
 
-    public bool BuyCard(SpiceInventory spiceInventory, int cardIndex)
+    public bool BuyCard(SpiceInventory spiceInventory, CardInventory cardInventory, Card card, int cardIndex)
     {
         int sum = spiceInventory.t1SpiceCount + spiceInventory.t2SpiceCount + spiceInventory.t3SpiceCount + spiceInventory.t4SpiceCount;
         if (sum < 5 - cardIndex) return false;
 
         int price = 5 - cardIndex;
+
+        cardInventory.AddCard(card);
 
         while (price > 0)
         {

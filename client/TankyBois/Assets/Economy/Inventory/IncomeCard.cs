@@ -4,11 +4,26 @@ using UnityEngine;
 
 public class IncomeCard : Card
 {
-    int t1Spice;
-    int t2Spice;
-    int t3Spice;
-    int t4Spice;
-    bool usable;
+    public int t1Spice
+    {
+        get;
+        private set;
+    }
+    public int t2Spice
+    {
+        get;
+        private set;
+    }
+    public int t3Spice
+    {
+        get;
+        private set;
+    }
+    public int t4Spice
+    {
+        get;
+        private set;
+    }
 
     public IncomeCard(int t1Spice = 0, int t2Spice = 0, int t3Spice = 0, int t4Spice = 0, bool usable = true)
     {
@@ -19,7 +34,7 @@ public class IncomeCard : Card
         this.usable = usable;
     }
 
-    public bool ConsumeCard(SpiceInventory spiceInventory)
+    public override bool ConsumeCard(SpiceInventory spiceInventory, int multiplier = 1)
     {
         if (!usable) return false;
 
