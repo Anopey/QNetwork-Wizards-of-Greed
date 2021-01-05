@@ -158,6 +158,34 @@ namespace Game.QNetwork
 
         #endregion
 
+        #region Utilities
+
+        /// <summary>
+        /// returns empty string if no error.
+        /// </summary>
+        /// <returns></returns>
+        public string VerifyPacket(Packet p)
+        {
+            try
+            {
+                p.SetReadWritePos(0);
+                p.ReadUShort(); //ID
+                p.ReadUShort(); //length
+                foreach(var primitive in Primitives)
+                {
+                    p.Read(primitive);
+                }
+                p.SetReadWritePos(0);
+                return "";
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// This is called minimum since a string can be indefinitely long.
         /// </summary>
