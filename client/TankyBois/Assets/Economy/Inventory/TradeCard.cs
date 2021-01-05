@@ -14,7 +14,7 @@ public class TradeCard : Card
         get;
         private set;
     }
-    public int t3Spice
+    public int t3Spice 
     {
         get;
         private set;
@@ -24,7 +24,6 @@ public class TradeCard : Card
         get;
         private set;
     }
-
     public TradeCard(int t1Spice = 0, int t2Spice = 0, int t3Spice = 0, int t4Spice = 0, bool usable = true)
     {
         this.t1Spice = t1Spice;

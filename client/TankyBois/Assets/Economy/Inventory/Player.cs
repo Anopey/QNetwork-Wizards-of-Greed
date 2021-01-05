@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,18 +20,20 @@ public class Player : MonoBehaviour
     public GameObject templateCardButton;
 
 
-    ContractInventory contractInventory;
-    SpiceInventory spiceInventory;
-    CardInventory cardInventory;
+    public ContractInventory contractInventory { get; private set; }
+    public SpiceInventory spiceInventory { get; private set; }
+    public CardInventory cardInventory { get; private set; }
 
     List<GameObject> cardButtons;
     List<Card> displayedCards;
 
     private void Update()
     {
+        //Debug.Log(displayedCards);
         if (displayedCards.Count != cardInventory.cards.Count)
         {
-            displayedCards = cardInventory.cards;
+            displayedCards = new List<Card>();
+            foreach (Card card in cardInventory.cards) displayedCards.Add(card);
             UpdateCards();
         }
           
@@ -53,6 +56,7 @@ public class Player : MonoBehaviour
         t3SpiceField.GetComponent<Text>().text = "Tier 3 Spice Count: " + spiceInventory.t3SpiceCount.ToString();
         t4SpiceField.GetComponent<Text>().text = "Tier 4 Spice Count: " + spiceInventory.t4SpiceCount.ToString();
     }
+
 
     private void UpdateCards()
     {
@@ -108,5 +112,25 @@ public class Player : MonoBehaviour
         {
             gameObject.GetComponent<Button>().interactable = true;
         }
+    }
+
+    public void BuyCard(GameObject gameObject)
+    {
+        int cardIndex = Shop.Singleton.cardButtonDict[gameObject];
+
+        bool successful = Shop.Singleton.cardShop.BuyCard(spiceInventory, cardInventory, Shop.Singleton.cardShop.cards[cardIndex], cardIndex);
+
+        if (successful)
+            Shop.Singleton.CycleCardShop();
+    }
+
+    public void BuyContract(GameObject gameObject)
+    {
+        int contractIndex = Shop.Singleton.contractButtonDict[gameObject];
+
+        bool successful = Shop.Singleton.contractShop.BuyContract(spiceInventory, contractInventory, Shop.Singleton.contractShop.contracts[contractIndex]);
+
+        if (successful)
+            Shop.Singleton.CycleContractShop();
     }
 }

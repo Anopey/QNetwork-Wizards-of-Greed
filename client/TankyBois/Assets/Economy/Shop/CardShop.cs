@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class CardShop
 {
-    List<Card> cards;
+    public List<Card> cards { get; private set; }
 
     public CardShop()
     {
+        cards = new List<Card>();
+
         cards.Add(new IncomeCard(3));
         cards.Add(new TradeCard(-3, 0, 0, 1));
         cards.Add(new TradeCard(3, -1));

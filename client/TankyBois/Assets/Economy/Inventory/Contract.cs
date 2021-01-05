@@ -5,10 +5,10 @@ using UnityEngine;
 public class Contract
 {
 
-    int t1Spice;
-    int t2Spice;
-    int t3Spice;
-    int t4Spice;
+    public int t1Spice { get; private set; }
+    public int t2Spice { get; private set; }
+    public int t3Spice { get; private set; }
+    public int t4Spice { get; private set; }
 
     public int points
     {
@@ -33,13 +33,8 @@ public class Contract
         this.bonusPoints = bonusPoints;
     }
 
-    public bool BuyContract(SpiceInventory spiceInventory)
+    public void UpdateBonuspoints(int bonusPoints)
     {
-        if (spiceInventory.t1SpiceCount < t1Spice && spiceInventory.t2SpiceCount < t2Spice &&
-            spiceInventory.t3SpiceCount < t3Spice && spiceInventory.t4SpiceCount < t4Spice) return false;
-
-        spiceInventory.ModifySpices(-t1Spice, -t2Spice, -t3Spice, -t4Spice);
-
-        return true;
+        this.bonusPoints = bonusPoints;
     }
 }
