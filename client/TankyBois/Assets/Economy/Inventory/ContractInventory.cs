@@ -15,6 +15,15 @@ public class ContractInventory
         contracts = new List<Contract>();
     }
 
+    public bool BuyContract(SpiceInventory spiceInventory, Contract contract)
+    {
+        if (!contract.BuyContract(spiceInventory)) return false;
+
+        contracts.Add(contract);
+
+        return true;
+    }
+
     public int CalculatePoints(SpiceInventory spiceInventory)
     {
 
