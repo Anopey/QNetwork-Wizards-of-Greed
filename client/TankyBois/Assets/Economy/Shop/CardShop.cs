@@ -29,22 +29,22 @@ public class CardShop
 
         while (price > 0)
         {
-            while (spiceInventory.t1SpiceCount > 0)
+            while (spiceInventory.t1SpiceCount > 0 && price > 0)
             {
                 price -= 1;
                 spiceInventory.ModifySpices(-1);
             }
-            while (spiceInventory.t2SpiceCount > 0)
+            while (spiceInventory.t2SpiceCount > 0 && price > 0)
             {
                 price -= 1;
                 spiceInventory.ModifySpices(0, -1);
             }
-            while (spiceInventory.t3SpiceCount > 0)
+            while (spiceInventory.t3SpiceCount > 0 && price >  0)
             {
                 price -= 1;
                 spiceInventory.ModifySpices(0, 0, -1);
             }
-            while (spiceInventory.t4SpiceCount > 0)
+            while (spiceInventory.t4SpiceCount > 0 && price >  0)
             {
                 price -= 1;
                 spiceInventory.ModifySpices(0, 0, 0, -1);
