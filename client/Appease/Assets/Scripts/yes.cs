@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Game.QNetwork.StandardAttributeAddon;
-
+using Game.QNetwork;
 
 public class yes : MonoBehaviour
 {

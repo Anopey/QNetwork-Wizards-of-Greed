@@ -33,7 +33,7 @@ namespace Game.QNetwork
         {
             get
             {
-                if(_singleton == null)
+                if (_singleton == null)
                 {
                     Singleton = new Client();
                     Singleton._tcp = new TCP();
@@ -54,8 +54,25 @@ namespace Game.QNetwork
             TCPInstance.Connect();
         }
 
-        public void WriteToServer(Packet packet)
+        public void WriteToServer(ushort packetID, Packet packet)
         {
+#if UNITY_EDITOR 
+            if (NetworkManager.Singleton.PacketManager.IDIsValid(packetID))
+            {
+                Debug.LogError("During write: \nPacket ID " + packetID.ToString() + " does not exist!");
+                return;
+            }
+
+            PacketDataType dataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(packetID);
+
+            string err = dataType.VerifyPacket(packet);
+
+            if (err != "")
+            {
+                Debug.LogError("During write: \n" + err);
+                return;
+            }
+#endif
             TCPInstance.SendPacket(packet);
         }
 
