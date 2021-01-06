@@ -30,7 +30,7 @@ public class ContractInventory
             totalPoints += contract.bonusPoints + contract.points;
         }
 
-        totalPoints += spiceInventory.t2SpiceCount + spiceInventory.t3SpiceCount + spiceInventory.t4SpiceCount;
+        totalPoints += spiceInventory.t2SpiceCount + spiceInventory.t3SpiceCount + spiceInventory.t4SpiceCount; //each non-yellow spice is worth a point
 
         return totalPoints;
     }

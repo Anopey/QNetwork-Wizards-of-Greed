@@ -29,8 +29,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        //Debug.Log(displayedCards);
-        if (displayedCards.Count != cardInventory.cards.Count)
+        if (displayedCards.Count != cardInventory.cards.Count) //if any cards have been added to inventory, update buttons in inventory
         {
             displayedCards = new List<Card>();
             foreach (Card card in cardInventory.cards) displayedCards.Add(card);
@@ -71,11 +70,13 @@ public class Player : MonoBehaviour
         foreach (Card card in cardInventory.cards)
         {
             Type t = card.GetType();
+
+            //duplicate template button and make create its onclick
             GameObject duplicate = Instantiate(templateCardButton, templateCardButton.transform.parent);
             duplicate.transform.position = new Vector3(templateCardButton.transform.position.x, templateCardButton.transform.position.y + yOffset, templateCardButton.transform.position.z);
             duplicate.SetActive(true);
             duplicate.GetComponent<Button>().onClick.AddListener(() => card.ConsumeCard(spiceInventory));
-            duplicate.GetComponent<Button>().onClick.AddListener(() => DisableButton(duplicate));
+            duplicate.GetComponent<Button>().onClick.AddListener(() => DisableButton(duplicate)); 
 
             GameObject buttonText = duplicate.transform.Find("Text").gameObject;
             if (t == typeof(IncomeCard))

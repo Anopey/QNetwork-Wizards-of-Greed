@@ -29,7 +29,7 @@ public class Shop : MonoBehaviour
 
         int counter = 0;
 
-        foreach (Card card in cardShop.cards)
+        foreach (Card card in cardShop.cards) //create the card buttons based on templatebutton
         {
             GameObject duplicate = Instantiate(templateShopCard, templateShopCard.transform.parent);
             duplicate.transform.position = new Vector3(templateShopCard.transform.position.x + counter * 300, templateShopCard.transform.position.y, templateShopCard.transform.position.z);
@@ -41,7 +41,7 @@ public class Shop : MonoBehaviour
 
         counter = 0;
 
-        foreach (Contract contract in contractShop.contracts)
+        foreach (Contract contract in contractShop.contracts) //do the same but for contracts
         {
             GameObject duplicate = Instantiate(templateShopContract, templateShopContract.transform.parent);
             duplicate.transform.position = new Vector3(templateShopContract.transform.position.x + counter * 300, templateShopContract.transform.position.y, templateShopContract.transform.position.z);
@@ -58,20 +58,6 @@ public class Shop : MonoBehaviour
         contractShop = new ContractShop();
         cardButtonDict = new Dictionary<GameObject, int>();
         contractButtonDict = new Dictionary<GameObject, int>();
-
-        //Debug.Log(templateShopCard.transform.position.x);
-
-        /*int counter = 0;
-
-        foreach (Card card in cardShop.cards)
-        {
-            GameObject duplicate = Instantiate(templateShopContract, templateShopContract.transform.parent);
-            duplicate.transform.position = new Vector3(templateShopContract.transform.position.x+counter*300, templateShopContract.transform.position.y, templateShopContract.transform.position.z);
-            duplicate.SetActive(true);
-            cardButtonDict.Add(duplicate, counter);
-
-            counter++;
-        }*/
     }
 
     public void CycleCardShop()

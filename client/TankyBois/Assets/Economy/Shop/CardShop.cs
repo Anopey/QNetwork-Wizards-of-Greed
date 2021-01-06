@@ -23,11 +23,11 @@ public class CardShop
         int sum = spiceInventory.t1SpiceCount + spiceInventory.t2SpiceCount + spiceInventory.t3SpiceCount + spiceInventory.t4SpiceCount;
         if (sum < 5 - cardIndex) return false;
 
-        int price = 5 - cardIndex;
+        int price = 5 - cardIndex; //# of spices the card costs
 
         cardInventory.AddCard(card);
 
-        while (price > 0)
+        while (price > 0) //Take spices from inventory equal to price of card (should be fixed so its not scuffed)
         {
             while (spiceInventory.t1SpiceCount > 0 && price > 0)
             {

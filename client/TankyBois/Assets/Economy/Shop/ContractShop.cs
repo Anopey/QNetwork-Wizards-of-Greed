@@ -24,7 +24,7 @@ public class ContractShop
         if (!(spiceInventory.t1SpiceCount > contract.t1Spice
             && spiceInventory.t2SpiceCount > contract.t2Spice
             && spiceInventory.t3SpiceCount > contract.t3Spice
-            && spiceInventory.t4SpiceCount > contract.t4Spice)) return false;
+            && spiceInventory.t4SpiceCount > contract.t4Spice)) return false; //if not capable of buying card
 
         spiceInventory.ModifySpices(-contract.t1Spice, -contract.t2Spice, -contract.t3Spice, -contract.t4Spice);
         contractInventory.AddContract(contract);
