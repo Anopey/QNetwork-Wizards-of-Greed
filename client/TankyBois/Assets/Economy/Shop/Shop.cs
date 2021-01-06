@@ -49,8 +49,10 @@ public class Shop : MonoBehaviour
             Type t = card.GetType();
 
             GameObject duplicate = Instantiate(templateShopCard, templateShopCard.transform.parent);
+
+            //position of new button is pos of previous button + 300 in x cord
             duplicate.transform.position = new Vector3(templateShopCard.transform.position.x + counter * 300, templateShopCard.transform.position.y, templateShopCard.transform.position.z);
-            duplicate.SetActive(true);
+            duplicate.SetActive(true); //template button is default inactive
             cardButtonDict.Add(duplicate, counter);
 
             GameObject buttonText = duplicate.transform.Find("Text").gameObject;
@@ -74,11 +76,11 @@ public class Shop : MonoBehaviour
         }
     }
 
-    private void CreateContractButtons()
+    private void CreateContractButtons() //literally the same as CreateCardButtons but all card is replaced with contract
     {
         int counter = 0;
 
-        foreach (Contract contract in contractShop.contracts) //do the same but for contracts
+        foreach (Contract contract in contractShop.contracts)
         {
             Type t = contract.GetType();
 
@@ -101,7 +103,7 @@ public class Shop : MonoBehaviour
         var rand = new System.Random();
         Card newCard = null;
 
-        int cardType = rand.Next(1,4);
+        int cardType = rand.Next(1,4); //determine what type card will be created
         if (cardType == 1)
             newCard = new TradeCard().GenerateCard();
         else if (cardType == 2)
@@ -110,7 +112,7 @@ public class Shop : MonoBehaviour
             newCard = new UpgradeCard().GenerateCard();
         
 
-        cardShop.cards.RemoveAt(cardIndex);
+        cardShop.cards.RemoveAt(cardIndex); //remove bought card
         cardShop.cards.Insert(0, newCard);
 
         foreach(KeyValuePair<GameObject, int> keyValuePair in cardButtonDict) //Destroy old buttons
@@ -129,7 +131,7 @@ public class Shop : MonoBehaviour
         Contract newContract = new Contract().GenerateContract();
 
 
-        contractShop.contracts.RemoveAt(contractIndex);
+        contractShop.contracts.RemoveAt(contractIndex); //remove bought contract
         contractShop.contracts.Insert(0, newContract);
 
         foreach (KeyValuePair<GameObject, int> keyValuePair in contractButtonDict) //Destroy old buttons

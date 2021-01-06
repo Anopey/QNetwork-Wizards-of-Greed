@@ -35,10 +35,10 @@ public class TradeCard : Card
 
     public override bool ConsumeCard(SpiceInventory spiceInventory, int multiplier = 1)
     {
-        if (!usable && spiceInventory.t1SpiceCount > -t1Spice * multiplier
-            && spiceInventory.t2SpiceCount > -t2Spice * multiplier
-            && spiceInventory.t3SpiceCount > -t3Spice * multiplier
-            && spiceInventory.t4SpiceCount > -t4Spice * multiplier) return false;
+        if (!usable && spiceInventory.t1SpiceCount > -t1Spice * multiplier         //-tSpice * multiplier will only be positive is tSpice is neg.
+            && spiceInventory.t2SpiceCount > -t2Spice * multiplier                 //Thus, it only checks all "input" spices
+            && spiceInventory.t3SpiceCount > -t3Spice * multiplier                 //aka if it takes 2 reds, it would be 2*multiplier
+            && spiceInventory.t4SpiceCount > -t4Spice * multiplier) return false;  //because all "output" spices are positive, count is always > output spices
 
         usable = false;
         spiceInventory.ModifySpices(t1Spice * multiplier, t2Spice * multiplier, t3Spice * multiplier, t4Spice * multiplier);
@@ -50,21 +50,22 @@ public class TradeCard : Card
     {
         var rand = new System.Random();
 
-        int spiceInputType = rand.Next(1, 5);
-        int original = spiceInputType;
-        int inputAmount = rand.Next(1, 7 - spiceInputType);
+        int spiceInputType = rand.Next(1, 5); //generate what spice will be the "input" spice
+        
+        int inputAmount = rand.Next(1, 7 - spiceInputType); //this makes for max 5 yellow input, max 4 red input, etc.
         int inputVal = inputAmount * spiceInputType;
 
-        int outputVal = inputVal + rand.Next(2, 5);
+        int outputVal = inputVal + rand.Next(2, 5); 
         outputVal = outputVal > 10 ? 10 : outputVal;
+        int original = outputVal;
 
         int[] spices = new int[4] { 0, 0, 0, 0 };
 
         while (outputVal > 0)
         {
-            if (outputVal == spiceInputType)
+            if (outputVal == spiceInputType) //this means it ran into a dead end e.g. 1 "spice value" left but cant output yellow
             {
-                outputVal = original;
+                outputVal = original; 
                 spices = new int[4] { 0, 0, 0, 0 };
             }
 

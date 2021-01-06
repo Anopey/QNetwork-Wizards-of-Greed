@@ -54,10 +54,10 @@ public class IncomeCard : Card
 
         while (value > 0)
         {
-            int curSpice = rand.Next(1, 5);
+            int curSpice = rand.Next(1, 5); //generate what spice incomecard will generate
             if (curSpice > value) continue;
 
-            spices[curSpice - 1]++;
+            spices[curSpice - 1]++; //spices are 1-indexed, array is 0-indexed
             value -= curSpice;
         }
 

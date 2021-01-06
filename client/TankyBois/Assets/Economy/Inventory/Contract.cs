@@ -42,20 +42,20 @@ public class Contract
     {
         var rand = new System.Random();
 
-        int[] spices = new int[4] { 0, 0, 0, 0 }; //max 2 yellow, 3 red, 4 green, 5 brown, max 5 total
+        int[] spices = new int[4] { 0, 0, 0, 0 };
 
         int curSpice = 0;
         int spiceCount = 0;
-        while (spiceCount < 4) //always 4-5 spices
+        while (spiceCount < 4) //always at least 4 spices
         {
-            int curSpiceCount = rand.Next(0, curSpice + 2);
+            int curSpiceCount = rand.Next(0, curSpice + 2); //max 2 yellow, 3 red, 4 green, 5 brown
 
-            if (curSpiceCount + spiceCount > 5) curSpiceCount = 5 - spiceCount;
+            if (curSpiceCount + spiceCount > 5) curSpiceCount = 5 - spiceCount; //max 5 spices total
 
             spices[curSpice] += curSpiceCount;
             spiceCount += curSpiceCount;
-            curSpice++;
-            curSpice %= 4;
+            curSpice++; //go to next spice (yellow -> red)
+            curSpice %= 4; //if at spice 4 (past brown), go back to spice 0 (yellow)
         }
 
         Contract newContract = new Contract(spices[0], spices[1], spices[2], spices[3]);

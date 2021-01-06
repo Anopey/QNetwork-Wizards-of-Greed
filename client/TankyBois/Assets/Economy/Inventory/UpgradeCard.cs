@@ -31,7 +31,7 @@ public class UpgradeCard : Card
     {
         var rand = new System.Random();
 
-        int upgradeCount = rand.Next(2, 4);
+        int upgradeCount = rand.Next(2, 4); //2 or 3 upgrades
 
         Card newCard = new UpgradeCard(upgradeCount);
         return newCard;

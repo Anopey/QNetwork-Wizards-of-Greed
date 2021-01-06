@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
         }
           
         UpdateSpices();
-        pointsField.GetComponent<Text>().text = "Points: " + contractInventory.CalculatePoints(spiceInventory);
+        pointsField.GetComponent<Text>().text = "Points: " + contractInventory.CalculatePoints(spiceInventory); //Update point counter
     }
 
     public Player()
@@ -120,9 +120,10 @@ public class Player : MonoBehaviour
 
     public void BuyCard(GameObject gameObject)
     {
-        int cardIndex = Shop.Singleton.cardButtonDict[gameObject];
+        int cardIndex = Shop.Singleton.cardButtonDict[gameObject]; //get index of card in shop
 
-        bool successful = Shop.Singleton.cardShop.BuyCard(spiceInventory, cardInventory, Shop.Singleton.cardShop.cards[cardIndex], cardIndex);
+        //check if card can be bought, if yes, add card to cardinventory and remove spices from spiceinventory
+        bool successful = Shop.Singleton.cardShop.BuyCard(spiceInventory, cardInventory, Shop.Singleton.cardShop.cards[cardIndex], cardIndex);  
 
         if (successful)
             Shop.Singleton.CycleCardShop(cardIndex);
@@ -132,6 +133,7 @@ public class Player : MonoBehaviour
     {
         int contractIndex = Shop.Singleton.contractButtonDict[gameObject];
 
+        //check if contract can be bought, if yes, add contract to contractinventory and remove spices from spiceinventory
         bool successful = Shop.Singleton.contractShop.BuyContract(spiceInventory, contractInventory, Shop.Singleton.contractShop.contracts[contractIndex]);
 
         if (successful)

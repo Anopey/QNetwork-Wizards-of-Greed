@@ -27,7 +27,7 @@ public class CardShop
 
         cardInventory.AddCard(card);
 
-        while (price > 0) //Take spices from inventory equal to price of card (should be fixed so its not scuffed)
+        while (price > 0) //Take spices from inventory equal to price of card, can be simplified a lot but laziness
         {
             while (spiceInventory.t1SpiceCount > 0 && price > 0)
             {
