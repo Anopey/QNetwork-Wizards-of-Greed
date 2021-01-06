@@ -10,12 +10,12 @@ public class CardShop
     {
         cards = new List<Card>();
 
-        cards.Add(new IncomeCard(3));
-        cards.Add(new TradeCard(-3, 0, 0, 1));
-        cards.Add(new TradeCard(3, -1));
-        cards.Add(new IncomeCard(1, 1));
-        cards.Add(new TradeCard(2, 3, -2));
-        cards.Add(new TradeCard(3, -2, 1));
+        cards.Insert(0, new IncomeCard(3));
+        cards.Insert(0, new TradeCard(-3, 0, 0, 1));
+        cards.Insert(0, new TradeCard(3, -1));
+        cards.Insert(0, new IncomeCard(1, 1));
+        cards.Insert(0, new TradeCard(2, 3, -2));
+        cards.Insert(0, new TradeCard(3, -2, 1));
     }
 
     public bool BuyCard(SpiceInventory spiceInventory, CardInventory cardInventory, Card card, int cardIndex)

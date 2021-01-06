@@ -27,4 +27,13 @@ public class UpgradeCard : Card
         return true;
     }
 
+    public override Card GenerateCard()
+    {
+        var rand = new System.Random();
+
+        int upgradeCount = rand.Next(2, 4);
+
+        Card newCard = new UpgradeCard(upgradeCount);
+        return newCard;
+    }
 }

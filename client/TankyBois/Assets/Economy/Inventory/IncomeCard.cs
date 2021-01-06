@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class IncomeCard : Card
 {
@@ -42,5 +43,25 @@ public class IncomeCard : Card
         spiceInventory.ModifySpices(t1Spice, t2Spice, t3Spice, t4Spice);
         return true;
 
+    }
+
+    public override Card GenerateCard()
+    {
+        var rand = new System.Random();
+
+        int value = rand.Next(3, 5);
+        int[] spices = new int[4] { 0, 0, 0, 0 };
+
+        while (value > 0)
+        {
+            int curSpice = rand.Next(1, 5);
+            if (curSpice > value) continue;
+
+            spices[curSpice - 1]++;
+            value -= curSpice;
+        }
+
+        Card newCard = new IncomeCard(spices[0], spices[1], spices[2], spices[3]);
+        return newCard;
     }
 }

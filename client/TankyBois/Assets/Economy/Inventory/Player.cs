@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
     public GameObject t4SpiceField;
     [SerializeField]
     public GameObject templateCardButton;
+    [SerializeField]
+    public GameObject pointsField;
 
 
     public ContractInventory contractInventory { get; private set; }
@@ -37,6 +39,7 @@ public class Player : MonoBehaviour
         }
           
         UpdateSpices();
+        pointsField.GetComponent<Text>().text = "Points: " + contractInventory.CalculatePoints(spiceInventory);
     }
 
     public Player()
@@ -122,7 +125,7 @@ public class Player : MonoBehaviour
         bool successful = Shop.Singleton.cardShop.BuyCard(spiceInventory, cardInventory, Shop.Singleton.cardShop.cards[cardIndex], cardIndex);
 
         if (successful)
-            Shop.Singleton.CycleCardShop();
+            Shop.Singleton.CycleCardShop(cardIndex);
     }
 
     public void BuyContract(GameObject gameObject)
@@ -132,6 +135,6 @@ public class Player : MonoBehaviour
         bool successful = Shop.Singleton.contractShop.BuyContract(spiceInventory, contractInventory, Shop.Singleton.contractShop.contracts[contractIndex]);
 
         if (successful)
-            Shop.Singleton.CycleContractShop();
+            Shop.Singleton.CycleContractShop(contractIndex);
     }
 }

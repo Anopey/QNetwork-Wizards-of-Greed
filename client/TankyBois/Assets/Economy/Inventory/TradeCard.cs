@@ -45,4 +45,40 @@ public class TradeCard : Card
         return true;
 
     }
+
+    public override Card GenerateCard()
+    {
+        var rand = new System.Random();
+
+        int spiceInputType = rand.Next(1, 5);
+        int original = spiceInputType;
+        int inputAmount = rand.Next(1, 7 - spiceInputType);
+        int inputVal = inputAmount * spiceInputType;
+
+        int outputVal = inputVal + rand.Next(2, 5);
+        outputVal = outputVal > 10 ? 10 : outputVal;
+
+        int[] spices = new int[4] { 0, 0, 0, 0 };
+
+        while (outputVal > 0)
+        {
+            if (outputVal == spiceInputType)
+            {
+                outputVal = original;
+                spices = new int[4] { 0, 0, 0, 0 };
+            }
+
+            int curSpice = rand.Next(1, 5);
+            if (curSpice == spiceInputType || curSpice > outputVal) continue;
+
+            spices[curSpice - 1]++;
+            outputVal -= curSpice;
+        }
+
+        spices[spiceInputType - 1] = -inputAmount;
+
+        Card newCard = new TradeCard(spices[0], spices[1], spices[2], spices[3]);
+
+        return newCard;
+    }
 }

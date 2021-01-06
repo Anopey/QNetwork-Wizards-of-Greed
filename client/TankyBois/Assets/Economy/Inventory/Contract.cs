@@ -37,4 +37,28 @@ public class Contract
     {
         this.bonusPoints = bonusPoints;
     }
+
+    public Contract GenerateContract()
+    {
+        var rand = new System.Random();
+
+        int[] spices = new int[4] { 0, 0, 0, 0 }; //max 2 yellow, 3 red, 4 green, 5 brown, max 5 total
+
+        int curSpice = 0;
+        int spiceCount = 0;
+        while (spiceCount < 4) //always 4-5 spices
+        {
+            int curSpiceCount = rand.Next(0, curSpice + 2);
+
+            if (curSpiceCount + spiceCount > 5) curSpiceCount = 5 - spiceCount;
+
+            spices[curSpice] += curSpiceCount;
+            spiceCount += curSpiceCount;
+            curSpice++;
+            curSpice %= 4;
+        }
+
+        Contract newContract = new Contract(spices[0], spices[1], spices[2], spices[3]);
+        return newContract;
+    }
 }
