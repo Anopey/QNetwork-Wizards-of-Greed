@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using QNetwork;
+using QUnity.UI;
+
 
 public class MainMenuManager : MonoBehaviour
 {
+
+    [SerializeField]
+    private float fadeDuration = 1f;
 
     [SerializeField]
     private GameObject usernameEntryParent;
@@ -48,11 +53,21 @@ public class MainMenuManager : MonoBehaviour
         string username = usernameInputField.text;
 
         InitializeConnectionToServerWithUsername(username);
+
+        //QUIUtility.Fade(usernameEntryParent, fadeDuration);
+
+        PlayerPrefs.SetString("Username", username);
+
+        usernameEntryParent.SetActive(false);
     }
 
     private void InitializeConnectionToServerWithUsername(string username)
     {
+        Client.Singleton.ConnectToServer();
 
+        //set username
+        Packet p = new Packet(17, new string[] { username});
+        Client.Singleton.WriteToServer(17, p);
     }
 
 }

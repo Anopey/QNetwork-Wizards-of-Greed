@@ -19,6 +19,7 @@ type player struct {
 	clientInstance *client
 	username       string
 	id             uint32
+	ableToPlay     bool
 	active         bool
 }
 
