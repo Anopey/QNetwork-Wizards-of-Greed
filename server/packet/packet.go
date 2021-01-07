@@ -5,25 +5,29 @@ import (
 )
 
 type Packet struct {
-	buf     []byte
-	ID      uint16
-	readPos uint16
+	buf            []byte
+	ID             uint16
+	readWritePos   uint16
+	expectedLength uint16
 }
 
 func NewPacket(ID uint16) *Packet {
 	p := Packet{
-		buf: make([]byte, 0),
-		ID:  ID,
+		buf:            make([]byte, 0),
+		ID:             ID,
+		readWritePos:   0,
+		expectedLength: GetPacketManager().GetPacketDataType(ID).MinimumByteLength,
 	}
 	p.WriteUInt16(ID)
-	p.WriteUInt16(GetPacketManager().GetPacketDataType(ID).MinimumByteLength)
+	p.WriteUInt16(p.expectedLength)
 	return &p
 }
 
 func NewPacketWithStrings(ID uint16, strings []string) *Packet {
 	p := Packet{
-		buf: make([]byte, 0),
-		ID:  ID,
+		buf:          make([]byte, 0),
+		ID:           ID,
+		readWritePos: 0,
 	}
 	p.WriteUInt16(ID)
 	length := (GetPacketManager().GetPacketDataType(ID).MinimumByteLength)
@@ -34,29 +38,39 @@ func NewPacketWithStrings(ID uint16, strings []string) *Packet {
 
 	p.WriteUInt16(length)
 	p.writeStrings(strings)
+
+	p.expectedLength = length
 	return &p
 }
 
 func NewPacketByCopy(buf []byte) *Packet {
 	p := Packet{
-		buf: make([]byte, len(buf)),
+		buf:          make([]byte, len(buf)),
+		readWritePos: 0,
 	}
 	copy(p.buf, buf)
 	p.ID = p.ReadUInt16()
+	p.expectedLength = p.ReadUInt16()
 	return &p
 }
 
 func NewPacketBySameReference(buf []byte) *Packet {
 	p := Packet{
-		buf: buf,
+		buf:          buf,
+		readWritePos: 0,
 	}
 	p.ID = p.ReadUInt16()
+	p.expectedLength = p.ReadUInt16()
 	return &p
 }
 
 //region Utils
 
-func (p *Packet) Length() uint16 {
+func (p *Packet) ExpectedLength() uint16 {
+	return p.expectedLength
+}
+
+func (p *Packet) BufferLength() uint16 {
 	return uint16(len(p.buf))
 }
 
@@ -138,13 +152,13 @@ func (p *Packet) writeStrings(val []string) {
 //TODO: perhaps add length checks etc.
 
 func (p *Packet) ReadByte() byte {
-	p.readPos++
-	return p.buf[p.readPos-1]
+	p.readWritePos++
+	return p.buf[p.readWritePos-1]
 }
 
 func (p *Packet) ReadBytes(len uint16) []byte {
-	p.readPos += len
-	return p.buf[p.readPos-len : p.readPos]
+	p.readWritePos += len
+	return p.buf[p.readWritePos-len : p.readWritePos]
 }
 
 func (p *Packet) ReadUInt16() uint16 {
@@ -174,8 +188,8 @@ func (p *Packet) ReadFloat64() float64 {
 }
 
 func (p *Packet) ReadBool() bool {
-	p.readPos++
-	if p.buf[p.readPos-1] == 0 {
+	p.readWritePos++
+	if p.buf[p.readWritePos-1] == 0 {
 		return false
 	}
 	return true
@@ -183,7 +197,7 @@ func (p *Packet) ReadBool() bool {
 
 func (p *Packet) ReadString() string {
 	len := p.ReadUInt16()
-	p.readPos += len
+	p.readWritePos += len
 	return string(p.ReadBytes(len))
 }
 
