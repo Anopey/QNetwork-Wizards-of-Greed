@@ -106,6 +106,21 @@ func tendToClientRead(p *player) {
 
 		//for now print as string.
 
+		//TODO: Test TCP reading on server.
+
+		_packet := packet.NewPacketByCopy(buf)
+
+		val, ok := idToHandler[_packet.ID]
+
+		if ok {
+			//packet is handled
+
+			val(_packet, p)
+
+		} else {
+			//default echo behaviour
+		}
+
 		s := string(buf[:len])
 
 		fmt.Println("Message", s)
