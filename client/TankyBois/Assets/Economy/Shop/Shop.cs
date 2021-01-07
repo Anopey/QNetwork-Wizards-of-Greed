@@ -20,6 +20,8 @@ public class Shop : MonoBehaviour
     public Dictionary<GameObject, int> contractButtonDict { get; private set; }
     public static Shop Singleton { get; private set; }
 
+    private int cardAmount = 6;
+    private int contractAmount = 6;
 
     private void Start()
     {
@@ -83,8 +85,10 @@ public class Shop : MonoBehaviour
         foreach (Contract contract in contractShop.contracts)
         {
             Type t = contract.GetType();
+            if (counter == contractAmount - 2) contract.bonusPoints = 1;
+            if (counter == contractAmount - 1) contract.bonusPoints = 3;
 
-            GameObject duplicate = Instantiate(templateShopContract, templateShopContract.transform.parent);
+              GameObject duplicate = Instantiate(templateShopContract, templateShopContract.transform.parent);
             duplicate.transform.position = new Vector3(templateShopContract.transform.position.x + counter * 300, templateShopContract.transform.position.y, templateShopContract.transform.position.z);
             duplicate.SetActive(true);
             contractButtonDict.Add(duplicate, counter);

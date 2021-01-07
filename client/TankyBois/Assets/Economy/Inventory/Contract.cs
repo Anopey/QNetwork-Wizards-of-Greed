@@ -17,7 +17,7 @@ public class Contract
     public int bonusPoints
     {
         get;
-        private set;
+        set;
     }
 
     public Contract(int t1Spice = 0, int t2Spice = 0, int t3Spice = 0, int t4Spice = 0, int bonusPoints = 0, int points = -1)
