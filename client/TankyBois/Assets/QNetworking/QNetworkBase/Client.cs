@@ -57,7 +57,7 @@ namespace QNetwork
         public void WriteToServer(ushort packetID, Packet packet)
         {
 #if UNITY_EDITOR 
-            if (NetworkManager.Singleton.PacketManager.IDIsValid(packetID))
+            if (!NetworkManager.Singleton.PacketManager.IDIsValid(packetID))
             {
                 Debug.LogError("During write: \nPacket ID " + packetID.ToString() + " does not exist!");
                 return;
