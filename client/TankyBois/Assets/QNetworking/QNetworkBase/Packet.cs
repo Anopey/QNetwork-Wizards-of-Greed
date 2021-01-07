@@ -33,7 +33,7 @@ namespace QNetwork
         private void InitializePacketWithIDAndStrings(ushort _id, string[] strings)
         {
             DataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(_id);
-            readWritePos = 2;
+            readWritePos = 0;
 
             ushort strlen = 0;
 
