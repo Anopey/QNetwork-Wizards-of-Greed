@@ -22,7 +22,7 @@ namespace QNetwork
         private void InitializePacketWithID(ushort _id)
         {
             DataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(_id);
-            readWritePos = 4;
+            readWritePos = 0;
             PacketBuffer = new byte[DataType.MinimumByteLength];
             Write(_id); // Write packet id to the buffer
             Write(DataType.MinimumByteLength);
@@ -33,7 +33,7 @@ namespace QNetwork
         private void InitializePacketWithIDAndStrings(ushort _id, string[] strings)
         {
             DataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(_id);
-            readWritePos = 4;
+            readWritePos = 0;
 
             ushort strlen = 0;
 
