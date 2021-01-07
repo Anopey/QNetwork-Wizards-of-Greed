@@ -107,12 +107,12 @@ public class Shop : MonoBehaviour
         var rand = new System.Random();
         Card newCard = null;
 
-        int cardType = rand.Next(1,4); //determine what type card will be created
-        if (cardType == 1)
+        int cardType = rand.Next(1,11); //determine what type card will be created
+        if (cardType < 7)
             newCard = new TradeCard().GenerateCard();
-        else if (cardType == 2)
+        else if (cardType < 10)
             newCard = new IncomeCard().GenerateCard();
-        else if (cardType == 3)
+        else
             newCard = new UpgradeCard().GenerateCard();
         
 

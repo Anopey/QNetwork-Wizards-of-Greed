@@ -29,11 +29,7 @@ public class UpgradeCard : Card
 
     public override Card GenerateCard()
     {
-        var rand = new System.Random();
-
-        int upgradeCount = rand.Next(2, 4); //2 or 3 upgrades
-
-        Card newCard = new UpgradeCard(upgradeCount);
+        Card newCard = new UpgradeCard(3);
         return newCard;
     }
 }
