@@ -7,12 +7,8 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ecf444feef93094dbea57e9f1ebdd5e, type: 3}
-  m_Name: (16) Message
+  m_Script: {fileID: 11500000, guid: 9234bfdb1efc6c145a74bfb28e8e8e00, type: 3}
+  m_Name: Standard Attribute Addon
   m_EditorClassIdentifier: 
-  Description: Simple Message
-  ID: 16
-  Handlers: []
-  Primitives: 12000000

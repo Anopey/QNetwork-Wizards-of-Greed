@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -285,6 +286,32 @@ namespace Game.QNetwork
 
         #region Other Read Utilities
 
+        public static Expression GetReaderExpression(TypeCode t, ParameterExpression packetExpression)
+        {
+            switch (t)
+            {
+                case TypeCode.String:
+                    return Expression.Call(packetExpression, typeof(Packet).GetMethod("ReadString"));
+                case TypeCode.Boolean:
+                    return Expression.Call(packetExpression, typeof(Packet).GetMethod("ReadBool"));
+                case TypeCode.Double:
+                    return Expression.Call(packetExpression, typeof(Packet).GetMethod("ReadDouble"));
+                case TypeCode.Single:
+                    return Expression.Call(packetExpression, typeof(Packet).GetMethod("ReadFloat"));
+                case TypeCode.Int64:
+                    return Expression.Call(packetExpression, typeof(Packet).GetMethod("ReadLong"));
+                case TypeCode.Int32:
+                    return Expression.Call(packetExpression, typeof(Packet).GetMethod("ReadInt"));
+                case TypeCode.Int16:
+                    return Expression.Call(packetExpression, typeof(Packet).GetMethod("ReadShort"));
+                case TypeCode.UInt16:
+                    return Expression.Call(packetExpression, typeof(Packet).GetMethod("ReadUShort"));
+                case TypeCode.Byte:
+                    return Expression.Call(packetExpression, typeof(Packet).GetMethod("ReadByte"));
+            }
+            return null;
+        }
+
         /// <summary>
         /// Do remember that boxing and unboxing is not very efficient. This Read function should be used sparingly, if at all.
         /// </summary>
@@ -309,7 +336,7 @@ namespace Game.QNetwork
                 case TypeCode.Int16:
                     return ReadShort();
                 case TypeCode.UInt16:
-                    return ReadShort();
+                    return ReadUShort();
                 case TypeCode.Byte:
                     return ReadByte();
             }

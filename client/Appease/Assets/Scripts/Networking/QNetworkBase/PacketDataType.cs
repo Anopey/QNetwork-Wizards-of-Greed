@@ -151,6 +151,39 @@ namespace Game.QNetwork
             VerifyPrepareHandler(handler);
         }
 
+        public void RegisterHandler(Action<Packet> act)
+        {
+            packetRecieved += act;
+        }
+
+        #endregion
+
+        #region Utilities
+
+        /// <summary>
+        /// returns empty string if no error.
+        /// </summary>
+        /// <returns></returns>
+        public string VerifyPacket(Packet p)
+        {
+            try
+            {
+                p.SetReadWritePos(0);
+                p.ReadUShort(); //ID
+                p.ReadUShort(); //length
+                foreach(var primitive in Primitives)
+                {
+                    p.Read(primitive);
+                }
+                p.SetReadWritePos(0);
+                return "";
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
+        }
+
         #endregion
 
         /// <summary>
