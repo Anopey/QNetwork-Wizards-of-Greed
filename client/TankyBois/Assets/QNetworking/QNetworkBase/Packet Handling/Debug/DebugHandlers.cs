@@ -34,6 +34,11 @@ namespace QNetwork.Debugging
             DebugHandler inst = new DebugHandler(inputTypes);
             return inst.ProcessPacket;
         }
+
+        protected override void OnGameStart()
+        {
+           
+        }
     }
 
 }

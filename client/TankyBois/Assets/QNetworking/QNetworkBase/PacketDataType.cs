@@ -42,6 +42,17 @@ namespace QNetwork
 
         #region Initialization
 
+        /// <summary>
+        /// Should only be called once during play mode. Called automatically by Packet Manager after it has been initialized by NetworkManager.
+        /// </summary>
+        public void InitializeDefaultHandlers()
+        {
+            foreach(var handler in Handlers)
+            {
+                handler.Initialize();
+            }
+        }
+
         private void CalculateMinimumByteLength()
         {
             calculatedMinimumTotalByteLength = 4; //since we start with ID and length.
@@ -130,7 +141,7 @@ namespace QNetwork
         {
             if (handler is ISinglePacketTypeHandler stat)
             {
-                for (int i = 0; i < stat.ExpectedPrimitives.Length; i++)
+                for (int i = 0; i < stat.ExpectedPrimitives.Count; i++)
                 {
                     if (stat.ExpectedPrimitives[i] != Primitives[i])
                     {

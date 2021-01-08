@@ -24,6 +24,11 @@ namespace QNetwork
                 }
                 idToPacketDataType.Add(data.ID, data);
             }
+
+            foreach(var handler in idToPacketDataType.Values)
+            {
+                handler.InitializeDefaultHandlers();
+            }
         }
 
         public PacketDataType GetPacketDataFromID(ushort ID)
