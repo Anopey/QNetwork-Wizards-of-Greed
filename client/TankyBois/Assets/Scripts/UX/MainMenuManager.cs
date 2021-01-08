@@ -50,7 +50,7 @@ public class MainMenuManager : MonoBehaviour
     private void Initialize()
     {
         upDownAnimationCoroutine = StartCoroutine(CrystalUpDown(upDownMotionAmplitude, upDownMotionSpeed));
-        if (PlayerPrefs.HasKey("Username") && !reuseName)
+        if (PlayerPrefs.HasKey("Username") && reuseName)
         {
             usernameEntryParent.SetActive(false);
             InitializeConnectionToServerWithUsername(PlayerPrefs.GetString("Username"));
