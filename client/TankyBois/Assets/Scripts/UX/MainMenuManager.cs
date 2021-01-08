@@ -13,6 +13,9 @@ public class MainMenuManager : MonoBehaviour
     private float fadeDuration = 1f;
 
     [SerializeField]
+    private bool reuseName = false;
+
+    [SerializeField]
     private GameObject usernameEntryParent;
 
     [SerializeField]
@@ -35,7 +38,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void Initialize()
     {
-        if (PlayerPrefs.HasKey("Username"))
+        if (PlayerPrefs.HasKey("Username") && !reuseName)
         {
             usernameEntryParent.SetActive(false);
             InitializeConnectionToServerWithUsername(PlayerPrefs.GetString("Username"));
