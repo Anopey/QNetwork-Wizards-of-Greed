@@ -7,7 +7,6 @@ import (
 )
 
 var idToPlayer map[uint32]*player
-var players []*player
 
 type client struct {
 	conn            *net.Conn
@@ -28,7 +27,6 @@ func initializeClientManagementParams() {
 	for i := uint32(0); i < totalPlayerLimit; i++ {
 		idToPlayer[i] = nil
 	}
-	players = make([]*player, 0, totalPlayerLimit)
 }
 
 func newPlayer(id uint32, conn *net.Conn) *player {
@@ -45,7 +43,6 @@ func newPlayer(id uint32, conn *net.Conn) *player {
 	}
 
 	idToPlayer[id] = &newPlayer
-	players = append(players, &newPlayer)
 	return &newPlayer
 }
 
@@ -65,4 +62,11 @@ func constructBasePlayerIfValid(conn *net.Conn) *player {
 	}
 
 	return newPlayer(id, conn)
+}
+
+func removePlayer(p *player) {
+	_, ok := idToPlayer[p.id]
+	if ok {
+		delete(idToPlayer, p.id) //TODO: ensure that this does not raise issues when it comes to concurrency.
+	}
 }
