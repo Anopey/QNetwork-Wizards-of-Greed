@@ -21,6 +21,17 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField]
     private TMP_InputField usernameInputField;
 
+    [SerializeField]
+    private List<GameObject> crystals;
+
+    [SerializeField]
+    private float upDownMotionAmplitude;
+
+    [SerializeField]
+    private float upDownMotionSpeed;
+
+    private Coroutine upDownAnimationCoroutine;
+
     #region Singleton Architecture
     public static MainMenuManager Singleton { get; private set; }
 
@@ -38,6 +49,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void Initialize()
     {
+        upDownAnimationCoroutine = StartCoroutine(CrystalUpDown(upDownMotionAmplitude, upDownMotionSpeed));
         if (PlayerPrefs.HasKey("Username") && !reuseName)
         {
             usernameEntryParent.SetActive(false);
@@ -48,6 +60,8 @@ public class MainMenuManager : MonoBehaviour
             usernameEntryParent.SetActive(true);
         }
     }
+
+    #region Username Submission
 
     public void OnUsernameSubmit()
     {
@@ -72,5 +86,37 @@ public class MainMenuManager : MonoBehaviour
         Packet p = new Packet(17, new string[] { username});
         Client.Singleton.WriteToServer(17, p);
     }
+
+    #endregion
+
+    #region Crystal Animations
+
+    private Dictionary<GameObject, float> crystalToSinInput = new Dictionary<GameObject, float>();
+    private Dictionary<GameObject, Vector3> crystalToInitial = new Dictionary<GameObject, Vector3>();
+    private IEnumerator CrystalUpDown(float amplitude, float speed)
+    {
+        crystalToSinInput.Clear();
+        crystalToInitial.Clear();
+
+        foreach (var crystal in crystals)
+        {
+            crystalToSinInput.Add(crystal, Random.Range(0, 2 * Mathf.PI));
+            crystalToInitial.Add(crystal, crystal.transform.position);
+        }
+
+
+        while (true)
+        {
+            foreach (var crystal in crystals)
+            {
+                crystalToSinInput[crystal] += Time.deltaTime * speed;
+                crystal.transform.position = crystalToInitial[crystal] + Vector3.up * amplitude * Mathf.Sin(crystalToSinInput[crystal]);
+            }
+            yield return new WaitForEndOfFrame();
+        }
+
+    }
+
+    #endregion
 
 }

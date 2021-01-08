@@ -2470,6 +2470,14 @@ MonoBehaviour:
   reuseName: 0
   usernameEntryParent: {fileID: 788539653}
   usernameInputField: {fileID: 778814272}
+  crystals:
+  - {fileID: 551464704}
+  - {fileID: 464778701}
+  - {fileID: 1618640539}
+  - {fileID: 360017377}
+  - {fileID: 802837497}
+  - {fileID: 845535411}
+  - {fileID: 1983819896}
 --- !u!4 &2115202716
 Transform:
   m_ObjectHideFlags: 0
