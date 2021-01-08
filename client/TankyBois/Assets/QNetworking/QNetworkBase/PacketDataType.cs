@@ -31,7 +31,7 @@ namespace QNetwork
             {
                 if (Application.isPlaying)
                 {
-                    Debug.LogError("Packet Data Type with ID " + ID.ToString() + " does not have any primitives!");
+                    Debug.LogError("Packet Data Type with ID " + ID.ToString() + " does not have a primitives List!");
                 }
                 return;
             }
