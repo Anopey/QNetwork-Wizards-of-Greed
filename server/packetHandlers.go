@@ -25,6 +25,7 @@ func packet17UsernameHandler(_packet *packet.Packet, _player *player) {
 	fmt.Printf("Player with ID %d is setting their username to %s", _player.id, username)
 	_player.username = username
 	_player.ableToPlay = true
+	_player.WritePacketAcknowledgeOrError(17, "")
 }
 
 //endregion

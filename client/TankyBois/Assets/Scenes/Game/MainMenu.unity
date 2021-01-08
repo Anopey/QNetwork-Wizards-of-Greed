@@ -2080,6 +2080,7 @@ MonoBehaviour:
     handledTypes:
     - {fileID: 11400000, guid: add15678ee9345e45aa86d171b257c61, type: 2}
     - {fileID: 11400000, guid: 61c9a1e9f1e974e4380b888795c63d4a, type: 2}
+    - {fileID: 11400000, guid: 1edcddadf411d9446bc819a483a1d514, type: 2}
 --- !u!4 &1376611528
 Transform:
   m_ObjectHideFlags: 0

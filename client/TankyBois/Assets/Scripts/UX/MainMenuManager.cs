@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using QNetwork;
+using QNetwork.Infrastructure;
 using QUnity.UI;
 using UnityEngine.UI;
 
@@ -120,11 +121,24 @@ public class MainMenuManager : MonoBehaviour
 
     private void OnConnectionEstablished()
     {
+
+        AcknowledgementHandler.Singleton.RegisterHandle(17, OnUsernameRecievedSuccessful, OnUsernameRecievedFailed);
+
         //set username
         Packet p = new Packet(17, new string[] { username });
         Client.Singleton.WriteToServer(17, p);
 
         usernameEntryParent.SetActive(false);
+    }
+
+    private void OnUsernameRecievedSuccessful()
+    {
+        Debug.Log("The server has accepted the username!");
+    }
+    
+    private void OnUsernameRecievedFailed(string err)
+    {
+        Debug.LogError("The server has not accepted the username, returning:\n" + err);
     }
 
 }

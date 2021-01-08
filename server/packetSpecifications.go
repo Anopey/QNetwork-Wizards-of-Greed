@@ -35,6 +35,7 @@ func (p *player) WriteMessage(message string) {
 	p.clientInstance.writeChannel <- pac
 }
 
+//pass in an empty string if no error.
 func (p *player) WritePacketAcknowledgeOrError(id uint16, err string) {
 	pac := packet.NewPacketWithStrings(0, []string{err})
 	pac.WriteUInt16(id)
