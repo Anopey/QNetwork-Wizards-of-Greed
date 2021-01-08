@@ -23,7 +23,7 @@ func initializePackets() *packet.PacketManager {
 	pm.RegisterPacketDataType(&packet.PacketDataType{
 		Description: "Acknowledgement of Success or Raising Error",
 		ID:          0,
-		Primitives:  []kind{reflect.Uint16, reflect.String},
+		Primitives:  []kind{reflect.String, reflect.Uint16},
 	})
 	return pm
 }
