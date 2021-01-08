@@ -18,6 +18,13 @@ func initializePackets() *packet.PacketManager {
 		Primitives:  []kind{reflect.String},
 		//handler yes
 	})
+
+	//acknowledgement
+	pm.RegisterPacketDataType(&packet.PacketDataType{
+		Description: "Acknowledgement of Success or Raising Error",
+		ID:          0,
+		Primitives:  []kind{reflect.Uint16, reflect.String},
+	})
 	return pm
 }
 
