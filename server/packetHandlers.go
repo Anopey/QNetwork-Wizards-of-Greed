@@ -30,7 +30,7 @@ func packet17UsernameHandler(_packet *packet.Packet, _player *player) {
 }
 
 func packet18UsernameHandler(_packet *packet.Packet, _player *player) {
-	
+
 }
 
 //endregion

@@ -151,8 +151,6 @@ namespace QNetwork
                     byte[] data = new byte[byteLength];
                     Array.Copy(receiveBuffer, data, byteLength);
 
-
-
                     stream.BeginRead(receiveBuffer, 0, HandleData(data), ReceiveCallback, null);
                 }
                 catch (Exception e)
@@ -186,10 +184,12 @@ namespace QNetwork
                 if (recievedData.Length == recievedData.ExpectedLength)
                 {
                     //our packet is now complete!
+
+                    Packet p = recievedData.PacketByShallowCopy();
+                    recievedData = null;
                     NetworkManager.ExecuteOnMainThread(() =>
                     {
-                        recievedData.DataType.OnPacketRecieved(recievedData);
-                        recievedData = null;
+                        p.DataType.OnPacketRecieved(p);
                     });
                 }
                 else

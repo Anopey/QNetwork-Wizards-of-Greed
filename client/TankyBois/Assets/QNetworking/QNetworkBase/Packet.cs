@@ -65,6 +65,22 @@ namespace QNetwork
             InitializePacketWithIDAndStrings(_id, strings);
         }
 
+        public Packet PacketByShallowCopy()
+        {
+            Packet returned = new Packet();
+            returned.PacketBuffer = PacketBuffer;
+            returned.DataType = DataType;
+            returned.ExpectedLength = ExpectedLength;
+            returned.ID = ID;
+            returned.readWritePos = readWritePos;
+            return returned;
+        }
+
+        private Packet()
+        {
+            
+        }
+
         public struct PacketReadArgs
         {
             public byte[] _data;
