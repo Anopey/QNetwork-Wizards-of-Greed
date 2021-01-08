@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using QNetwork;
 using QUnity.UI;
-
+using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -20,6 +20,9 @@ public class MainMenuManager : MonoBehaviour
 
     [SerializeField]
     private TMP_InputField usernameInputField;
+
+    [SerializeField]
+    private Button submissionButton;
 
     [SerializeField]
     private List<GameObject> crystals;
@@ -55,10 +58,6 @@ public class MainMenuManager : MonoBehaviour
             usernameEntryParent.SetActive(false);
             InitializeConnectionToServerWithUsername(PlayerPrefs.GetString("Username"));
         }
-        else
-        {
-            usernameEntryParent.SetActive(true);
-        }
     }
 
     #region Username Submission
@@ -71,21 +70,10 @@ public class MainMenuManager : MonoBehaviour
 
         InitializeConnectionToServerWithUsername(username);
 
-        //QUIUtility.Fade(usernameEntryParent, fadeDuration);
-
         PlayerPrefs.SetString("Username", username);
-
-        usernameEntryParent.SetActive(false);
     }
 
-    private void InitializeConnectionToServerWithUsername(string username)
-    {
-        Client.Singleton.ConnectToServer();
 
-        //set username
-        Packet p = new Packet(17, new string[] { username});
-        Client.Singleton.WriteToServer(17, p);
-    }
 
     #endregion
 
@@ -118,5 +106,25 @@ public class MainMenuManager : MonoBehaviour
     }
 
     #endregion
+
+    string username;
+
+    private void InitializeConnectionToServerWithUsername(string username)
+    {
+        Client.Singleton.ConnectToServer(OnConnectionEstablished);
+
+        submissionButton.interactable = false;
+
+        this.username = username;
+    }
+
+    private void OnConnectionEstablished()
+    {
+        //set username
+        Packet p = new Packet(17, new string[] { username });
+        Client.Singleton.WriteToServer(17, p);
+
+        usernameEntryParent.SetActive(false);
+    }
 
 }

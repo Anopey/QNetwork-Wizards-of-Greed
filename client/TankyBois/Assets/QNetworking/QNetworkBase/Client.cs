@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System;
 
+
 namespace QNetwork
 {
 
@@ -49,9 +50,9 @@ namespace QNetwork
         #endregion
 
 
-        public void ConnectToServer()
+        public void ConnectToServer(Action callback)
         {
-            TCPInstance.Connect();
+            TCPInstance.Connect(callback);
         }
 
         public void WriteToServer(ushort packetID, Packet packet)
@@ -85,7 +86,9 @@ namespace QNetwork
 
             private Packet recievedData;
 
-            public void Connect()
+            private Action onConnectSingleCallback;
+
+            public void Connect(Action OnConnect)
             {
                 socket = new TcpClient
                 {
@@ -94,6 +97,9 @@ namespace QNetwork
                 };
 
                 receiveBuffer = new byte[dataBufferSize];
+
+                onConnectSingleCallback = OnConnect;
+
                 socket.BeginConnect(Singleton._ip, Singleton.Port, ConnectCallback, socket);
             }
 
@@ -116,11 +122,17 @@ namespace QNetwork
                 if (!socket.Connected)
                 {
                     Debug.LogError("Failed to connect!");
+                    return;
                 }
 
                 stream = socket.GetStream();
 
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+                NetworkManager.ExecuteOnMainThread(() =>
+               {
+                   onConnectSingleCallback?.Invoke();
+                   onConnectSingleCallback = null;
+               });
             }
 
             private void ReceiveCallback(IAsyncResult result)
