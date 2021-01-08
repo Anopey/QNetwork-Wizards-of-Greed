@@ -34,6 +34,9 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField]
     private float upDownMotionSpeed;
 
+    [SerializeField]
+    private Button PlayButton;
+
     private Coroutine upDownAnimationCoroutine;
 
     #region Singleton Architecture
@@ -134,6 +137,9 @@ public class MainMenuManager : MonoBehaviour
     private void OnUsernameRecievedSuccessful()
     {
         Debug.Log("The server has accepted the username!");
+
+        PlayButton.gameObject.SetActive(true);
+
     }
     
     private void OnUsernameRecievedFailed(string err)
@@ -141,4 +147,22 @@ public class MainMenuManager : MonoBehaviour
         Debug.LogError("The server has not accepted the username, returning:\n" + err);
     }
 
+    public void OnPlay()
+    {
+        Packet p = new Packet(18);
+
+        AcknowledgementHandler.Singleton.RegisterHandle(18, OnQueueUpSuccessful, OnQueupFailed);
+
+        Client.Singleton.WriteToServer(18, p);
+    }
+
+    private void OnQueueUpSuccessful()
+    {
+
+    }
+
+    private void OnQueupFailed(string err)
+    {
+
+    }
 }

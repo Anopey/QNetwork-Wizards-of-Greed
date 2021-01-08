@@ -11,6 +11,7 @@ type packetHandler func(*packet.Packet, *player)
 var idToHandler map[uint16]packetHandler = map[uint16]packetHandler{
 	16: packet16Handler,
 	17: packet17UsernameHandler,
+	18: packet18UsernameHandler,
 }
 
 //region Default
@@ -26,6 +27,10 @@ func packet17UsernameHandler(_packet *packet.Packet, _player *player) {
 	_player.username = username
 	_player.ableToPlay = true
 	_player.WritePacketAcknowledgeOrError(17, "")
+}
+
+func packet18UsernameHandler(_packet *packet.Packet, _player *player) {
+	
 }
 
 //endregion
