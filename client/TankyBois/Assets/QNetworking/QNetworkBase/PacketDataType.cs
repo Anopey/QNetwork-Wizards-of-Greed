@@ -27,6 +27,14 @@ namespace QNetwork
 
         private void OnEnable()
         {
+            if(Primitives == null)
+            {
+                if (Application.isPlaying)
+                {
+                    Debug.LogError("Packet Data Type with ID " + ID.ToString() + " does not have any primitives!");
+                }
+                return;
+            }
             CalculateMinimumByteLength();
             VerifyStringPrimitivePositions();
             VerifyPrepareHandlers();
