@@ -16,6 +16,9 @@ namespace QNetwork.Infrastructure
     public class AcknowledgementHandler : PacketHandler, ISinglePacketTypeHandler
     {
 
+        [SerializeField]
+        private bool debugErrorUponUnhandled = false;
+
         public static AcknowledgementHandler Singleton { get; private set; }
 
         private Dictionary<ushort, List<AcknowledgementHandle>> idToRegisteredHandles = new Dictionary<ushort, List<AcknowledgementHandle>>();
@@ -32,6 +35,45 @@ namespace QNetwork.Infrastructure
         {
             string err = p.ReadString();
             ushort id = p.ReadUShort();
+
+            if (!idToRegisteredHandles.ContainsKey(id))
+            {
+                if (debugErrorUponUnhandled)
+                {
+                    Debug.LogError("The acknowledgement processor was asked to process a packet with ID " + id.ToString() + " and yet no such handles were attached to it!");
+                }
+                return;
+            }
+
+            if (err == "")
+            {
+                //no error. have a good day.
+                var handlers = idToRegisteredHandles[id];
+                for (int i = 0; i < handlers.Count; i++)
+                {
+                    handlers[i].onSuccess();
+                    if (handlers[i].callOnce)
+                    {
+                        handlers.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+            else
+            {
+                // D:
+                var handlers = idToRegisteredHandles[id];
+                for (int i = 0; i < handlers.Count; i++)
+                {
+                    handlers[i].onFailure(err);
+                    if (handlers[i].callOnce)
+                    {
+                        handlers.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+
         }
 
         protected override void OnGameStart()
