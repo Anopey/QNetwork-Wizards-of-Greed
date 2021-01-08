@@ -101,10 +101,27 @@ func tendToClientRead(p *player) {
 			fmt.Printf("***\nError reading data from player" + "\n Server Time:" + getCurrentServerTime() + "\n ID:" + strconv.Itoa(int(p.id)) + "\nUsername: " + p.username +
 				"\n IP:" + (*p.clientInstance.conn).RemoteAddr().String() + "\nError:" + err.Error() + "\n***\n")
 			//TODO disconnect client etc.
+			p.WriteMessage("Unable to read from client. Terminating Client.")
+			p.clientInstance.clientTerminate <- struct{}{}
 			break
 		}
 
 		//for now print as string.
+
+		//TODO: Test TCP reading on server.
+
+		_packet := packet.NewPacketByCopy(buf)
+
+		val, ok := idToHandler[_packet.ID]
+
+		if ok {
+			//packet is handled
+
+			val(_packet, p)
+
+		} else {
+			//default echo behaviour
+		}
 
 		s := string(buf[:len])
 
@@ -121,7 +138,10 @@ func tendToClientChannels(p *player) {
 			(*conn).Write(pac.GetAllBytes())
 			break
 		case <-p.clientInstance.clientTerminate:
-			//client disconnect logic
+			p.active = false
+			p.ableToPlay = false
+			(*p.clientInstance.conn).Close()
+			removePlayer(p)
 			return
 		}
 	}
