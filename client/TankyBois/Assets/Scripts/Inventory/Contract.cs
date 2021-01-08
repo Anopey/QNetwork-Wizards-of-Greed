@@ -50,7 +50,7 @@ public class Contract
         {
             int curSpiceCount = rand.Next(0, curSpice + 2); //max 2 yellow, 3 red, 4 green, 5 brown
 
-            if (curSpiceCount + spiceCount > 5) curSpiceCount = 5 - spiceCount; //max 5 spices total
+            if (curSpiceCount + spiceCount > 6) curSpiceCount = 6 - spiceCount; //max 5 spices total
 
             spices[curSpice] += curSpiceCount;
             spiceCount += curSpiceCount;

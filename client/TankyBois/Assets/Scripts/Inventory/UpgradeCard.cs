@@ -21,7 +21,7 @@ public class UpgradeCard : Card
     {
         if (!usable) return false;
 
-        //IMPLEMENT
+        
 
         usable = false;
         return true;
