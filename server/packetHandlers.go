@@ -11,7 +11,7 @@ type packetHandler func(*packet.Packet, *player)
 var idToHandler map[uint16]packetHandler = map[uint16]packetHandler{
 	16: packet16Handler,
 	17: packet17UsernameHandler,
-	18: packet18UsernameHandler,
+	18: packet18QueueUpHandler,
 }
 
 //region Default
@@ -29,8 +29,8 @@ func packet17UsernameHandler(_packet *packet.Packet, _player *player) {
 	_player.WritePacketAcknowledgeOrError(17, "")
 }
 
-func packet18UsernameHandler(_packet *packet.Packet, _player *player) {
-
+func packet18QueueUpHandler(_packet *packet.Packet, _player *player) {
+	fmt.Printf("Player with ID %d is queuing up!", _player.id)
 }
 
 //endregion
