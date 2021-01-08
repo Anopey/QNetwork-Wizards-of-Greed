@@ -7,7 +7,7 @@ namespace QNetwork.Debugging
     using QNetwork;
     using System;
 
-    [CreateAssetMenu(fileName = "DebugFirstString", menuName = "QNetwork/DefaultPacketHandlers/DebugFirstString", order = 1)]
+    [CreateAssetMenu(fileName = "DebugFirstString", menuName = "QNetwork/DefaultPacketHandlers/(any) Debug", order = 1)]
     public class DebugHandlers : PacketHandler, IMultiplePacketTypeHandler
     {
         private class DebugHandler

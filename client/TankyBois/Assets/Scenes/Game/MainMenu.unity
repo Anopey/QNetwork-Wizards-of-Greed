@@ -2561,7 +2561,7 @@ MonoBehaviour:
   - {fileID: 802837497}
   - {fileID: 845535411}
   - {fileID: 1983819896}
-  upDownMotionAmplitude: 0.5
+  upDownMotionAmplitude: 0.65
   upDownMotionSpeed: 1
 --- !u!4 &2115202716
 Transform:
