@@ -35,4 +35,10 @@ func (p *player) WriteMessage(message string) {
 	p.clientInstance.writeChannel <- pac
 }
 
+func (p *player) WritePacketAcknowledgeOrError(id uint16, err string) {
+	pac := packet.NewPacketWithStrings(0, []string{err})
+	pac.WriteUInt16(id)
+	p.clientInstance.writeChannel <- pac
+}
+
 //endregion
