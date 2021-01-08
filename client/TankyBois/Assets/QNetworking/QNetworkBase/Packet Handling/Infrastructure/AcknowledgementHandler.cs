@@ -23,10 +23,10 @@ namespace QNetwork.Infrastructure
 
         private Dictionary<ushort, List<AcknowledgementHandle>> idToRegisteredHandles = new Dictionary<ushort, List<AcknowledgementHandle>>();
 
-        public TypeCode[] expectedPrimitives = new TypeCode[]
+        private TypeCode[] expectedPrimitives = new TypeCode[]
         {
-            TypeCode.UInt16,
-            TypeCode.String
+            TypeCode.String,
+            TypeCode.UInt16
         };
 
         public ReadOnlyCollection<TypeCode> ExpectedPrimitives { get { return new ReadOnlyCollection<TypeCode>(expectedPrimitives); } }

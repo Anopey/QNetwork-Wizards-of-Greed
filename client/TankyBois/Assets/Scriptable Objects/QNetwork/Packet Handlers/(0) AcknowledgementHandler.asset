@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: (0) AcknowledgementHandler
   m_EditorClassIdentifier: 
   debugErrorUponUnhandled: 0
-  expectedPrimitives: 0800000012000000
+  expectedPrimitives: 1200000008000000

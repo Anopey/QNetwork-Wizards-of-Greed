@@ -197,7 +197,6 @@ func (p *Packet) ReadBool() bool {
 
 func (p *Packet) ReadString() string {
 	len := p.ReadUInt16()
-	p.readWritePos += len
 	return string(p.ReadBytes(len))
 }
 
