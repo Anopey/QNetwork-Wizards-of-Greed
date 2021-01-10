@@ -27,6 +27,13 @@ func initializePackets() *packet.PacketManager {
 		ID:          0,
 		Primitives:  []kind{reflect.String, reflect.Uint16},
 	})
+
+	//queue info
+	pm.RegisterPacketDataType(&packet.PacketDataType{
+		Description: "Queue Info. First int is number of poeple in queue. Second is number of people readied up",
+		ID:          21,
+		Primitives:  []kind{reflect.Uint16, reflect.Uint16},
+	})
 	return pm
 }
 
@@ -41,6 +48,13 @@ func (p *player) WriteMessage(message string) {
 func (p *player) WritePacketAcknowledgeOrError(id uint16, err string) {
 	pac := packet.NewPacketWithStrings(0, []string{err})
 	pac.WriteUInt16(id)
+	p.clientInstance.writeChannel <- pac
+}
+
+func (p *player) WriteQueueInfo(playersInQueue uint16, playersReady uint16) {
+	pac := packet.NewPacket(21)
+	pac.WriteUInt16(playersInQueue)
+	pac.WriteUInt16(playersReady)
 	p.clientInstance.writeChannel <- pac
 }
 
