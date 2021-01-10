@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using QNetwork;
+using QNetwork.Infrastructure;
 using QUnity.UI;
 using UnityEngine.UI;
 
@@ -32,6 +33,9 @@ public class MainMenuManager : MonoBehaviour
 
     [SerializeField]
     private float upDownMotionSpeed;
+
+    [SerializeField]
+    private Button PlayButton;
 
     private Coroutine upDownAnimationCoroutine;
 
@@ -120,6 +124,9 @@ public class MainMenuManager : MonoBehaviour
 
     private void OnConnectionEstablished()
     {
+
+        AcknowledgementHandler.Singleton.RegisterHandle(17, OnUsernameRecievedSuccessful, OnUsernameRecievedFailed);
+
         //set username
         Packet p = new Packet(17, new string[] { username });
         Client.Singleton.WriteToServer(17, p);
@@ -127,4 +134,37 @@ public class MainMenuManager : MonoBehaviour
         usernameEntryParent.SetActive(false);
     }
 
+    private void OnUsernameRecievedSuccessful()
+    {
+        Debug.Log("The server has accepted the username!");
+
+        PlayButton.gameObject.SetActive(true);
+
+    }
+    
+    private void OnUsernameRecievedFailed(string err)
+    {
+        Debug.LogError("The server has not accepted the username, returning:\n" + err);
+    }
+
+    public void OnPlay()
+    {
+        Packet p = new Packet(18);
+
+        AcknowledgementHandler.Singleton.RegisterHandle(18, OnQueueUpSuccessful, OnQueupFailed);
+
+        PlayButton.interactable = false;
+
+        Client.Singleton.WriteToServer(18, p);
+    }
+
+    private void OnQueueUpSuccessful()
+    {
+
+    }
+
+    private void OnQueupFailed(string err)
+    {
+        Debug.LogError("Queue up attempt failed with errorfrom server: " + err);
+    }
 }

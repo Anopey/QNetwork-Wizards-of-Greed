@@ -117,7 +117,7 @@ func tendToClientRead(p *player) {
 		if ok {
 			//packet is handled
 
-			val(_packet, p)
+			go val(_packet, p)
 
 		} else {
 			//default echo behaviour
@@ -135,7 +135,10 @@ func tendToClientChannels(p *player) {
 	for {
 		select {
 		case pac := <-p.clientInstance.writeChannel:
-			(*conn).Write(pac.GetAllBytes())
+			_, err := (*conn).Write(pac.GetAllBytes())
+			if err != nil {
+				fmt.Printf(err.Error())
+			}
 			break
 		case <-p.clientInstance.clientTerminate:
 			p.active = false
