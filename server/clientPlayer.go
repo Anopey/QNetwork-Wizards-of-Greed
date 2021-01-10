@@ -20,6 +20,7 @@ type player struct {
 	id             uint32
 	ableToPlay     bool
 	active         bool
+	activeGame     *game
 }
 
 func initializeClientManagementParams() {
