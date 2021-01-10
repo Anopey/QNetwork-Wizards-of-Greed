@@ -12,7 +12,7 @@ var playersInQueue []*player = make([]*player, 8)
 
 var queueMutex sync.RWMutex = sync.RWMutex{}
 
-func getMatchmakingGeneralErrors(p *player) string {
+func getMatchmakingGeneralPlayerErrors(p *player) string {
 	if !p.ableToPlay {
 		return "Player's isAbleToPlay field is set to false!"
 	}
@@ -26,13 +26,13 @@ func getMatchmakingGeneralErrors(p *player) string {
 
 func leaveQueue(p *player) string {
 
-	queueMutex.Lock()
-
-	err := getMatchmakingGeneralErrors(p)
+	err := getMatchmakingGeneralPlayerErrors(p)
 
 	if err != "" {
 		return err
 	}
+
+	queueMutex.Lock()
 
 	if !queueContainsPlayer(p) {
 		return "The player is not queued up!"
@@ -47,19 +47,49 @@ func leaveQueue(p *player) string {
 
 func queueUp(p *player) string {
 
-	queueMutex.Lock()
-
-	err := getMatchmakingGeneralErrors(p)
+	err := getMatchmakingGeneralPlayerErrors(p)
 
 	if err != "" {
 		return err
 	}
+
+	queueMutex.Lock()
 
 	if len(playersInQueue) == maximumPlayersInQueue {
 		return "The queue is full!"
 	}
 
 	//queue up logic
+
+	queueMutex.Unlock()
+
+	return ""
+}
+
+func readyUp(p *player) string {
+
+	err := getMatchmakingGeneralPlayerErrors(p)
+
+	if err != "" {
+		return err
+	}
+
+	queueMutex.Lock()
+
+	queueMutex.Unlock()
+
+	return ""
+}
+
+func unready(p *player) string {
+
+	err := getMatchmakingGeneralPlayerErrors(p)
+
+	if err != "" {
+		return err
+	}
+
+	queueMutex.Lock()
 
 	queueMutex.Unlock()
 
