@@ -1179,6 +1179,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   templateShopCard: {fileID: 848959173}
   templateShopContract: {fileID: 753881381}
+  templateContract: {fileID: 0}
+  templateUpgradecard: {fileID: 0}
+  templateIncomecard: {fileID: 0}
+  templateTradecard: {fileID: 0}
+  templateBonusSpices: {fileID: 0}
 --- !u!4 &1698736238
 Transform:
   m_ObjectHideFlags: 0

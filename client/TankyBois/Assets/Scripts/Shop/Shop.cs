@@ -9,10 +9,16 @@ public class Shop : MonoBehaviour
 {
 
     [SerializeField]
-    private GameObject templateShopCard;
+    private GameObject templateContract;
     [SerializeField]
-    private GameObject templateShopContract;
-
+    private GameObject templateUpgradecard;
+    [SerializeField]
+    private GameObject templateIncomecard;
+    [SerializeField]
+    private GameObject templateTradecard;
+    [SerializeField]
+    private GameObject templateBonusSpices;
+    
     public CardShop cardShop { get; private set; }
     public ContractShop contractShop { get; private set; }
 
@@ -50,29 +56,26 @@ public class Shop : MonoBehaviour
         {
             Type t = card.GetType();
 
-            GameObject duplicate = Instantiate(templateShopCard, templateShopCard.transform.parent);
+            GameObject duplicate = new GameObject();
 
-            //position of new button is pos of previous button + 300 in x cord
-            duplicate.transform.position = new Vector3(templateShopCard.transform.position.x + counter * 300, templateShopCard.transform.position.y, templateShopCard.transform.position.z);
-            duplicate.SetActive(true); //template button is default inactive
-            cardButtonDict.Add(duplicate, counter);
-
-            GameObject buttonText = duplicate.transform.Find("Text").gameObject;
             if (t == typeof(IncomeCard))
             {
-                IncomeCard incomeCard = (IncomeCard)card;
-                buttonText.GetComponent<Text>().text = $"Income: {incomeCard.t1Spice},{incomeCard.t2Spice},{incomeCard.t3Spice},{incomeCard.t4Spice}";
+                duplicate = Instantiate(templateIncomecard, templateIncomecard.transform.parent);
+                duplicate.transform.SetSiblingIndex(counter);
             }
             else if (t == typeof(UpgradeCard))
             {
-                UpgradeCard upgradeCard = (UpgradeCard)card;
-                buttonText.GetComponent<Text>().text = $"Upgrade: {upgradeCard.upgradeCount} upgrades";
+                duplicate = Instantiate(templateUpgradecard, templateUpgradecard.transform.parent);
+                duplicate.transform.SetSiblingIndex(counter);
             }
             else if (t == typeof(TradeCard))
             {
-                TradeCard tradeCard = (TradeCard)card;
-                buttonText.GetComponent<Text>().text = $"Trade: {tradeCard.t1Spice},{tradeCard.t2Spice},{tradeCard.t3Spice},{tradeCard.t4Spice}";
+                duplicate = Instantiate(templateTradecard, templateTradecard.transform.parent);
+                duplicate.transform.SetSiblingIndex(counter);
             }
+
+            duplicate.SetActive(true); //template button is default inactive
+            cardButtonDict.Add(duplicate, counter);
 
             counter++;
         }

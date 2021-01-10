@@ -79,7 +79,7 @@ public class Player : MonoBehaviour
             duplicate.transform.position = new Vector3(templateCardButton.transform.position.x, templateCardButton.transform.position.y + yOffset, templateCardButton.transform.position.z);
             duplicate.SetActive(true);
             duplicate.GetComponent<Button>().onClick.AddListener(() => card.ConsumeCard(spiceInventory));
-            duplicate.GetComponent<Button>().onClick.AddListener(() => DisableButton(duplicate)); 
+            duplicate.GetComponent<Button>().onClick.AddListener(() => DisableButton(duplicate));
 
             GameObject buttonText = duplicate.transform.Find("Text").gameObject;
             if (t == typeof(IncomeCard))
