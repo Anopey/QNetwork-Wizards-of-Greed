@@ -160,7 +160,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void OnQueueUpSuccessful()
     {
-
+        Debug.Log("Queuing up is successful.");
     }
 
     private void OnQueupFailed(string err)
