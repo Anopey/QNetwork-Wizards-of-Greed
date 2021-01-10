@@ -91,15 +91,9 @@ public class Shop : MonoBehaviour
             if (counter == contractAmount - 2) contract.bonusPoints = 1;
             if (counter == contractAmount - 1) contract.bonusPoints = 3;
 
-              GameObject duplicate = Instantiate(templateShopContract, templateShopContract.transform.parent);
-            duplicate.transform.position = new Vector3(templateShopContract.transform.position.x + counter * 300, templateShopContract.transform.position.y, templateShopContract.transform.position.z);
+            GameObject duplicate = Instantiate(templateContract, templateContract.transform.parent);
             duplicate.SetActive(true);
             contractButtonDict.Add(duplicate, counter);
-
-            GameObject buttonText = duplicate.transform.Find("Text").gameObject;
-
-            buttonText.GetComponent<Text>().text = $"Cost: {contract.t1Spice},{contract.t2Spice},{contract.t3Spice},{contract.t4Spice}";
-
 
             counter++;
         }
