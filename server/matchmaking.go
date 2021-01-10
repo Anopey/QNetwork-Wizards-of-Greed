@@ -8,7 +8,12 @@ const (
 	maximumPlayersInQueue int = 8
 )
 
-var playersInQueue []*player = make([]*player, 8)
+type playerQueueInfo struct {
+	p       *player
+	isReady bool
+}
+
+var playersInQueue []*playerQueueInfo = make([]*playerQueueInfo, 8)
 
 var queueMutex sync.RWMutex = sync.RWMutex{}
 
@@ -98,7 +103,7 @@ func unready(p *player) string {
 
 func queueContainsPlayer(p *player) bool {
 	for _, c := range playersInQueue {
-		if c == p {
+		if c.p == p {
 			return true
 		}
 	}
