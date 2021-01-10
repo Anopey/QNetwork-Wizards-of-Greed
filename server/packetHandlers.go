@@ -31,6 +31,8 @@ func packet17UsernameHandler(_packet *packet.Packet, _player *player) {
 
 func packet18QueueUpHandler(_packet *packet.Packet, _player *player) {
 	fmt.Printf("Player with ID %d is queuing up!", _player.id)
+	err := queueUp(_player)
+	(*_player).WritePacketAcknowledgeOrError(18, err)
 }
 
 //endregion

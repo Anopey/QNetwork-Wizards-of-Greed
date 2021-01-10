@@ -153,6 +153,8 @@ public class MainMenuManager : MonoBehaviour
 
         AcknowledgementHandler.Singleton.RegisterHandle(18, OnQueueUpSuccessful, OnQueupFailed);
 
+        PlayButton.interactable = false;
+
         Client.Singleton.WriteToServer(18, p);
     }
 
@@ -163,6 +165,6 @@ public class MainMenuManager : MonoBehaviour
 
     private void OnQueupFailed(string err)
     {
-
+        Debug.LogError("Queue up attempt failed with errorfrom server: " + err);
     }
 }
