@@ -12,6 +12,7 @@ var idToHandler map[uint16]packetHandler = map[uint16]packetHandler{
 	16: packet16Handler,
 	17: packet17UsernameHandler,
 	18: packet18QueueUpHandler,
+	19: packet19LeaveQueueHandler,
 }
 
 //region Default
@@ -33,6 +34,12 @@ func packet18QueueUpHandler(_packet *packet.Packet, _player *player) {
 	fmt.Printf("Player with ID %d is queuing up!", _player.id)
 	err := queueUp(_player)
 	(*_player).WritePacketAcknowledgeOrError(18, err)
+}
+
+func packet19LeaveQueueHandler(_packet *packet.Packet, _player *player) {
+	fmt.Printf("Player with ID %d is leaving queue!", _player.id)
+	err := leaveQueue(_player)
+	(*_player).WritePacketAcknowledgeOrError(19, err)
 }
 
 //endregion

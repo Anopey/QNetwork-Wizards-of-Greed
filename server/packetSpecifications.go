@@ -8,6 +8,8 @@ import (
 
 type kind = reflect.Kind
 
+//only packet types that the server actively writes need to be registered here :)
+
 func initializePackets() *packet.PacketManager {
 	pm := packet.GetPacketManager()
 
