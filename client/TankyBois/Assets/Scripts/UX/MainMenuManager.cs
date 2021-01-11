@@ -25,9 +25,6 @@ public class MainMenuManager : MonoBehaviour
     private TMP_InputField usernameInputField;
 
     [SerializeField]
-    private Button playButton;
-
-    [SerializeField]
     private GameObject readyUnreadyParent;
 
     [SerializeField]
@@ -49,7 +46,7 @@ public class MainMenuManager : MonoBehaviour
     private float upDownMotionSpeed;
 
     [SerializeField]
-    private Button PlayButton;
+    private Button playButton;
 
     private Coroutine upDownAnimationCoroutine;
 
@@ -152,8 +149,8 @@ public class MainMenuManager : MonoBehaviour
     {
         Debug.Log("The server has accepted the username!");
 
-        PlayButton.gameObject.SetActive(true);
-
+        playButton.gameObject.SetActive(true);
+        playButton.interactable = true;
     }
     
     private void OnUsernameRecievedFailed(string err)
@@ -167,7 +164,7 @@ public class MainMenuManager : MonoBehaviour
 
         AcknowledgementHandler.Singleton.RegisterHandle(18, OnQueueUpSuccessful, OnQueupFailed);
 
-        PlayButton.interactable = false;
+        playButton.interactable = false;
 
         Client.Singleton.WriteToServer(p);
     }
@@ -176,7 +173,7 @@ public class MainMenuManager : MonoBehaviour
     {
         Debug.Log("Queuing up is successful.");
 
-        PlayButton.gameObject.SetActive(false);
+        playButton.gameObject.SetActive(false);
 
         readyUnreadyParent.SetActive(true);
     }

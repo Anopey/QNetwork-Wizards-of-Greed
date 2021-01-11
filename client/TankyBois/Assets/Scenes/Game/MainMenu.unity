@@ -1528,7 +1528,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &788539654
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2891,7 +2891,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1321123699
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3781,7 +3781,7 @@ MonoBehaviour:
   usernameInputField: {fileID: 778814272}
   playButton: {fileID: 1207189809}
   readyUnreadyParent: {fileID: 1321123698}
-  readyUnreadyButton: {fileID: 1227462265}
+  readyUnreadyButton: {fileID: 1227462267}
   readyText: {fileID: 233114986}
   inQueueText: {fileID: 1776704733}
   crystals:
