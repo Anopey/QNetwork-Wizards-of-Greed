@@ -143,6 +143,9 @@ func tendToClientChannels(p *player) {
 		case <-p.clientInstance.clientTerminate:
 			p.active = false
 			p.ableToPlay = false
+			if p.queueInfo != nil {
+				leaveQueue(p)
+			}
 			(*p.clientInstance.conn).Close()
 			removePlayer(p)
 			return
