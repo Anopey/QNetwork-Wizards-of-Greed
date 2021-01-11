@@ -96,7 +96,7 @@ namespace QNetwork
             PacketBuffer = new byte[ExpectedLength];
             ID = BitConverter.ToUInt16(_data, 0);
             DataType = NetworkManager.Singleton.PacketManager.GetPacketDataFromID(ID);
-            Write(_data);
+            Write(_data, _data.Length > ExpectedLength? ExpectedLength : (ushort)_data.Length);
             readWritePos = 4;
         }
 
@@ -139,6 +139,13 @@ namespace QNetwork
         public void Write(byte[] _value)
         {
             Buffer.BlockCopy(_value, 0, PacketBuffer, readWritePos, _value.Length);
+            readWritePos += _value.Length;
+        }
+        /// <summary>Adds an array of bytes to the packet.</summary>
+        /// <param name="_value">The byte array to add.</param>
+        public void Write(byte[] _value, ushort len)
+        {
+            Buffer.BlockCopy(_value, 0, PacketBuffer, readWritePos, len);
             readWritePos += _value.Length;
         }
         /// <summary>Adds a short to the packet.</summary>

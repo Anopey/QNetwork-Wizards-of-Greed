@@ -60,7 +60,7 @@ namespace QNetwork
 #if UNITY_EDITOR 
 
             ushort packetID = packet.ID;
-            
+
             if (!NetworkManager.Singleton.PacketManager.IDIsValid(packetID))
             {
                 Debug.LogError("During write: \nPacket ID " + packetID.ToString() + " does not exist!");
@@ -165,11 +165,24 @@ namespace QNetwork
 
             private ushort HandleData(byte[] _data) //TODO: Optimize even further if needed!
             {
+
+                int callAgainIndex = -1;
+
                 if (recievedData == null)
                 {
                     //Start reading a new packet.
                     if (_data.Length < 4)
                         Debug.LogError("Now we know that we actually can get lower than 4 bytes at the start of a new packet. Readjust accordingly!");
+
+                    ushort packetLen = BitConverter.ToUInt16(_data, 2);
+
+                    if (packetLen < _data.Length)
+                    {
+                        //multiple packets!!
+
+                        callAgainIndex = packetLen;
+
+                    }
 
                     recievedData = new Packet(_data);
                 }
@@ -198,6 +211,13 @@ namespace QNetwork
                 else
                 {
                     return (ushort)(recievedData.ExpectedLength - recievedData.Length);
+                }
+
+                if(callAgainIndex != -1)
+                {
+                    byte[] extraData = new byte[_data.Length - callAgainIndex - 1];
+                    Array.Copy(_data, callAgainIndex, extraData,0, _data.Length - callAgainIndex - 1);
+                    return HandleData(extraData);
                 }
 
                 return dataBufferSize;

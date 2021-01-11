@@ -135,6 +135,7 @@ func tendToClientChannels(p *player) {
 	for {
 		select {
 		case pac := <-p.clientInstance.writeChannel:
+			fmt.Printf("writing to player with ID %d", p.id)
 			_, err := (*conn).Write(pac.GetAllBytes())
 			if err != nil {
 				fmt.Printf(err.Error())
