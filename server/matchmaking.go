@@ -13,7 +13,7 @@ type playerQueueInfo struct {
 	queueIndex uint16
 }
 
-var playersInQueue []*player = make([]*player, 8)
+var playersInQueue []*player = make([]*player, 0, 8)
 var queueReadyCount uint16 = 0
 
 var queueMutex sync.RWMutex = sync.RWMutex{}
