@@ -115,6 +115,14 @@ func readyUp(p *player) string {
 		return "The player is not queued up!"
 	}
 
+	if p.queueInfo.isReady {
+		return "The player is already ready!"
+	}
+
+	p.queueInfo.isReady = true
+
+	queueReadyCount++
+
 	writeAllQueueInfo()
 
 	queueMutex.Unlock()
@@ -136,6 +144,14 @@ func unready(p *player) string {
 		return "The player is not queued up!"
 	}
 
+	if !p.queueInfo.isReady {
+		return "The player is already not ready!"
+	}
+
+	p.queueInfo.isReady = false
+
+	queueReadyCount--
+
 	writeAllQueueInfo()
 
 	queueMutex.Unlock()
@@ -143,10 +159,6 @@ func unready(p *player) string {
 	return ""
 }
 
-//later on we will need faster ways when we have a fully fledged matchmaking system.
-
 func writeAllQueueInfo() {
-	for _, p := range playersInQueue {
-		p.WriteQueueInfo(uint16(len(playersInQueue)), queueReadyCount)
-	}
+	writeQueueInfoTo(playersInQueue, uint16(len(playersInQueue)), queueReadyCount)
 }

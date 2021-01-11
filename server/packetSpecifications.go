@@ -58,4 +58,14 @@ func (p *player) WriteQueueInfo(playersInQueue uint16, playersReady uint16) {
 	p.clientInstance.writeChannel <- pac
 }
 
+func writeQueueInfoTo(players []*player, playersInQueue uint16, playersReady uint16) {
+	pac := packet.NewPacket(21)
+	pac.WriteUInt16(playersInQueue)
+	pac.WriteUInt16(playersReady)
+
+	for _, p := range players {
+		p.clientInstance.writeChannel <- pac
+	}
+}
+
 //endregion
