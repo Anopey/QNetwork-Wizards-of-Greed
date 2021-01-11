@@ -18,6 +18,7 @@ type player struct {
 	clientInstance *client
 	username       string
 	id             uint32
+	queueInfo      *playerQueueInfo
 	ableToPlay     bool
 	active         bool
 	activeGame     *game

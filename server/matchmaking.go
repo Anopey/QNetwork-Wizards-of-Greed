@@ -9,11 +9,11 @@ const (
 )
 
 type playerQueueInfo struct {
-	p       *player
-	isReady bool
+	isReady    bool
+	queueIndex uint16
 }
 
-var playersInQueue []*playerQueueInfo = make([]*playerQueueInfo, 8)
+var playersInQueue []*player = make([]*player, 8)
 var queueReadyCount uint16 = 0
 
 var queueMutex sync.RWMutex = sync.RWMutex{}
@@ -40,28 +40,25 @@ func leaveQueue(p *player) string {
 
 	queueMutex.Lock()
 
-	if !queueContainsPlayer(p) {
+	if p.queueInfo == nil {
 		return "The player is not queued up!"
 	}
 
 	//leave queue logic
 
-	var index uint16 = uint16(maximumPlayersInQueue + 1)
-
-	for i, c := range playersInQueue {
-		if c.p == p {
-			index = uint16(i)
-			break
-		}
-	}
-
-	if playersInQueue[index].isReady {
+	if p.queueInfo.isReady {
 		queueReadyCount--
 	}
+
+	index := p.queueInfo.queueIndex
 
 	playersInQueue[index] = playersInQueue[len(playersInQueue)-1]
 
 	playersInQueue = playersInQueue[:len(playersInQueue)-1]
+
+	playersInQueue[index].queueInfo.queueIndex = index //assign leaving player's index to the new occupant of his/her index.
+
+	p.queueInfo = nil
 
 	writeAllQueueInfo()
 
@@ -80,20 +77,22 @@ func queueUp(p *player) string {
 
 	queueMutex.Lock()
 
+	if p.queueInfo != nil {
+		return "The player is already queued up!"
+	}
+
 	if len(playersInQueue) == maximumPlayersInQueue {
 		return "The queue is full!"
 	}
 
-	if queueContainsPlayer(p) {
-		return "The player is already queued up!"
-	}
-
 	//queue up logic
 
-	playersInQueue = append(playersInQueue, &playerQueueInfo{
-		p:       p,
-		isReady: true,
-	})
+	p.queueInfo = &playerQueueInfo{
+		isReady:    false,
+		queueIndex: uint16(len(playersInQueue)),
+	}
+
+	playersInQueue = append(playersInQueue, p)
 
 	writeAllQueueInfo()
 
@@ -112,7 +111,7 @@ func readyUp(p *player) string {
 
 	queueMutex.Lock()
 
-	if !queueContainsPlayer(p) {
+	if p.queueInfo == nil {
 		return "The player is not queued up!"
 	}
 
@@ -133,7 +132,7 @@ func unready(p *player) string {
 
 	queueMutex.Lock()
 
-	if !queueContainsPlayer(p) {
+	if p.queueInfo == nil {
 		return "The player is not queued up!"
 	}
 
@@ -145,17 +144,9 @@ func unready(p *player) string {
 }
 
 //later on we will need faster ways when we have a fully fledged matchmaking system.
-func queueContainsPlayer(p *player) bool {
-	for _, c := range playersInQueue {
-		if c.p == p {
-			return true
-		}
-	}
-	return false
-}
 
 func writeAllQueueInfo() {
 	for _, p := range playersInQueue {
-		p.p.WriteQueueInfo(uint16(len(playersInQueue)), queueReadyCount)
+		p.WriteQueueInfo(uint16(len(playersInQueue)), queueReadyCount)
 	}
 }
