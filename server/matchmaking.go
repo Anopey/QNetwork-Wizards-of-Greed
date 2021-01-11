@@ -145,3 +145,9 @@ func queueContainsPlayer(p *player) bool {
 	}
 	return false
 }
+
+func writeAllQueueInfo() {
+	for _, p := range playersInQueue {
+		p.p.WriteQueueInfo(uint16(len(playersInQueue)), queueReadyCount)
+	}
+}
