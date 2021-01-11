@@ -481,7 +481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &352110819
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2328,7 +2328,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1207189807
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3779,7 +3779,6 @@ MonoBehaviour:
   reuseName: 0
   usernameEntryParent: {fileID: 788539653}
   usernameInputField: {fileID: 778814272}
-  playButton: {fileID: 1207189809}
   readyUnreadyParent: {fileID: 1321123698}
   readyUnreadyButton: {fileID: 1227462267}
   readyText: {fileID: 233114986}
@@ -3794,7 +3793,7 @@ MonoBehaviour:
   - {fileID: 1983819896}
   upDownMotionAmplitude: 0.65
   upDownMotionSpeed: 1
-  PlayButton: {fileID: 1207189809}
+  playButton: {fileID: 1207189809}
 --- !u!4 &2115202716
 Transform:
   m_ObjectHideFlags: 0
