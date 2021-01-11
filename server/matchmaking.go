@@ -63,6 +63,8 @@ func leaveQueue(p *player) string {
 
 	playersInQueue = playersInQueue[:len(playersInQueue)-1]
 
+	writeAllQueueInfo()
+
 	queueMutex.Unlock()
 
 	return ""
@@ -93,6 +95,8 @@ func queueUp(p *player) string {
 		isReady: true,
 	})
 
+	writeAllQueueInfo()
+
 	queueMutex.Unlock()
 
 	return ""
@@ -112,6 +116,8 @@ func readyUp(p *player) string {
 		return "The player is not queued up!"
 	}
 
+	writeAllQueueInfo()
+
 	queueMutex.Unlock()
 
 	return ""
@@ -130,6 +136,8 @@ func unready(p *player) string {
 	if !queueContainsPlayer(p) {
 		return "The player is not queued up!"
 	}
+
+	writeAllQueueInfo()
 
 	queueMutex.Unlock()
 
