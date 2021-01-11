@@ -14,10 +14,11 @@ type playerQueueInfo struct {
 }
 
 var playersInQueue []*playerQueueInfo = make([]*playerQueueInfo, 8)
+var queueReadyCount uint16 = 0
 
 var queueMutex sync.RWMutex = sync.RWMutex{}
 
-func getMatchmakingGeneralPlayerErrors(p *player) string {
+func getMatchmakingCommonErrors(p *player) string {
 	if !p.ableToPlay {
 		return "Player's isAbleToPlay field is set to false!"
 	}
@@ -31,7 +32,7 @@ func getMatchmakingGeneralPlayerErrors(p *player) string {
 
 func leaveQueue(p *player) string {
 
-	err := getMatchmakingGeneralPlayerErrors(p)
+	err := getMatchmakingCommonErrors(p)
 
 	if err != "" {
 		return err
@@ -45,6 +46,23 @@ func leaveQueue(p *player) string {
 
 	//leave queue logic
 
+	var index uint16 = uint16(maximumPlayersInQueue + 1)
+
+	for i, c := range playersInQueue {
+		if c.p == p {
+			index = uint16(i)
+			break
+		}
+	}
+
+	if playersInQueue[index].isReady {
+		queueReadyCount--
+	}
+
+	playersInQueue[index] = playersInQueue[len(playersInQueue)-1]
+
+	playersInQueue = playersInQueue[:len(playersInQueue)-1]
+
 	queueMutex.Unlock()
 
 	return ""
@@ -52,7 +70,7 @@ func leaveQueue(p *player) string {
 
 func queueUp(p *player) string {
 
-	err := getMatchmakingGeneralPlayerErrors(p)
+	err := getMatchmakingCommonErrors(p)
 
 	if err != "" {
 		return err
@@ -64,7 +82,16 @@ func queueUp(p *player) string {
 		return "The queue is full!"
 	}
 
+	if queueContainsPlayer(p) {
+		return "The player is already queued up!"
+	}
+
 	//queue up logic
+
+	playersInQueue = append(playersInQueue, &playerQueueInfo{
+		p:       p,
+		isReady: true,
+	})
 
 	queueMutex.Unlock()
 
@@ -73,13 +100,17 @@ func queueUp(p *player) string {
 
 func readyUp(p *player) string {
 
-	err := getMatchmakingGeneralPlayerErrors(p)
+	err := getMatchmakingCommonErrors(p)
 
 	if err != "" {
 		return err
 	}
 
 	queueMutex.Lock()
+
+	if !queueContainsPlayer(p) {
+		return "The player is not queued up!"
+	}
 
 	queueMutex.Unlock()
 
@@ -88,7 +119,7 @@ func readyUp(p *player) string {
 
 func unready(p *player) string {
 
-	err := getMatchmakingGeneralPlayerErrors(p)
+	err := getMatchmakingCommonErrors(p)
 
 	if err != "" {
 		return err
@@ -96,11 +127,16 @@ func unready(p *player) string {
 
 	queueMutex.Lock()
 
+	if !queueContainsPlayer(p) {
+		return "The player is not queued up!"
+	}
+
 	queueMutex.Unlock()
 
 	return ""
 }
 
+//later on we will need faster ways when we have a fully fledged matchmaking system.
 func queueContainsPlayer(p *player) bool {
 	for _, c := range playersInQueue {
 		if c.p == p {
