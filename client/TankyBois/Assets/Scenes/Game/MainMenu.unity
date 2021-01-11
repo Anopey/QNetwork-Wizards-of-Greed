@@ -3767,7 +3767,11 @@ MonoBehaviour:
   reuseName: 0
   usernameEntryParent: {fileID: 788539653}
   usernameInputField: {fileID: 778814272}
-  submissionButton: {fileID: 776613005}
+  playButton: {fileID: 1207189809}
+  readyUnreadyParent: {fileID: 1321123698}
+  readyUnreadyButton: {fileID: 1227462265}
+  readyText: {fileID: 233114986}
+  inQueueText: {fileID: 1776704733}
   crystals:
   - {fileID: 551464704}
   - {fileID: 464778701}

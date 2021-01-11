@@ -23,7 +23,19 @@ public class MainMenuManager : MonoBehaviour
     private TMP_InputField usernameInputField;
 
     [SerializeField]
-    private Button submissionButton;
+    private Button playButton;
+
+    [SerializeField]
+    private GameObject readyUnreadyParent;
+
+    [SerializeField]
+    private Button readyUnreadyButton;
+
+    [SerializeField]
+    private TMP_Text readyText;
+
+    [SerializeField]
+    private TMP_Text inQueueText;
 
     [SerializeField]
     private List<GameObject> crystals;
@@ -117,7 +129,7 @@ public class MainMenuManager : MonoBehaviour
     {
         Client.Singleton.ConnectToServer(OnConnectionEstablished);
 
-        submissionButton.interactable = false;
+        playButton.interactable = false;
 
         this.username = username;
     }
