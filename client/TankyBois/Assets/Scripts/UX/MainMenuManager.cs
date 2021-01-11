@@ -4,8 +4,10 @@ using UnityEngine;
 using TMPro;
 using QNetwork;
 using QNetwork.Infrastructure;
+using QNetwork.StandardAttributeAddon;
 using QUnity.UI;
 using UnityEngine.UI;
+using Michsky.UI.ModernUIPack;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -29,7 +31,7 @@ public class MainMenuManager : MonoBehaviour
     private GameObject readyUnreadyParent;
 
     [SerializeField]
-    private Button readyUnreadyButton;
+    private ButtonManagerBasic readyUnreadyButton;
 
     [SerializeField]
     private TMP_Text readyText;
@@ -141,7 +143,7 @@ public class MainMenuManager : MonoBehaviour
 
         //set username
         Packet p = new Packet(17, new string[] { username });
-        Client.Singleton.WriteToServer(17, p);
+        Client.Singleton.WriteToServer(p);
 
         usernameEntryParent.SetActive(false);
     }
@@ -167,16 +169,53 @@ public class MainMenuManager : MonoBehaviour
 
         PlayButton.interactable = false;
 
-        Client.Singleton.WriteToServer(18, p);
+        Client.Singleton.WriteToServer(p);
     }
 
     private void OnQueueUpSuccessful()
     {
         Debug.Log("Queuing up is successful.");
+
+        PlayButton.gameObject.SetActive(false);
+
+        readyUnreadyParent.SetActive(true);
     }
 
     private void OnQueupFailed(string err)
     {
         Debug.LogError("Queue up attempt failed with errorfrom server: " + err);
+    }
+
+    [QDataReciever(21)]
+    public static void OnQueueInformationUpdated(ushort inQueue, ushort ready)
+    {
+        Singleton.inQueueText.text = "In Queue: " + inQueue.ToString();
+        Singleton.readyText.text = "Ready: " + ready.ToString();
+    }
+
+    private bool currentlyReady = false;
+
+    public void OnReadyUnready()
+    {
+        Packet p = new Packet(20);
+        if (currentlyReady)
+        {
+            //unready
+            currentlyReady = false;
+
+            readyUnreadyButton.buttonText = "Ready";
+            readyUnreadyButton.startColor = Color.red;
+        }
+        else
+        {
+            //ready
+            currentlyReady = true;
+
+            readyUnreadyButton.buttonText = "Unready";
+            readyUnreadyButton.startColor = Color.green;
+        }
+
+        p.Write(currentlyReady);
+        Client.Singleton.WriteToServer(p);
     }
 }

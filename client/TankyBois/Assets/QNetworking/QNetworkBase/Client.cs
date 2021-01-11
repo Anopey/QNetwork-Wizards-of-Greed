@@ -55,9 +55,12 @@ namespace QNetwork
             TCPInstance.Connect(callback);
         }
 
-        public void WriteToServer(ushort packetID, Packet packet)
+        public void WriteToServer(Packet packet)
         {
 #if UNITY_EDITOR 
+
+            ushort packetID = packet.ID;
+            
             if (!NetworkManager.Singleton.PacketManager.IDIsValid(packetID))
             {
                 Debug.LogError("During write: \nPacket ID " + packetID.ToString() + " does not exist!");
