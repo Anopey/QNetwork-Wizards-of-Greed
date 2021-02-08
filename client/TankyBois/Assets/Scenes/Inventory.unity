@@ -1177,8 +1177,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f2c47d69a11e1949b35b23071eca081, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  templateShopCard: {fileID: 848959173}
-  templateShopContract: {fileID: 753881381}
   templateContract: {fileID: 0}
   templateUpgradecard: {fileID: 0}
   templateIncomecard: {fileID: 0}
